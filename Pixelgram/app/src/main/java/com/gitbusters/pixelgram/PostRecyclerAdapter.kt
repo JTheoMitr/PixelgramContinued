@@ -1,4 +1,4 @@
-package com.gitbusters.pixelgram.landing_page
+package com.gitbusters.pixelgram
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.gitbusters.pixelgram.R
 
 // Build the recyclerview with post_items
 class PostRecyclerAdapter (private val postData: ArrayList<DummyPost>) : RecyclerView.Adapter<PostRecyclerAdapter.ViewHolder>() {
