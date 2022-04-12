@@ -46,7 +46,9 @@ class MainActivity : AppCompatActivity() {
         MainScope().launch(Dispatchers.IO) {
             try {
                 //BACK_END: Calling our getPosts method from the API Interface
-                val response = api.getPosts().awaitResponse()
+                //BACK_END: .getPosts() takes in pageNumber and pageSize
+
+                val response = api.getPosts(1,5).awaitResponse()
                 if (response.isSuccessful) {
                     val data = response.body()!!
                     Log.d(TAG, data.content.toString())
