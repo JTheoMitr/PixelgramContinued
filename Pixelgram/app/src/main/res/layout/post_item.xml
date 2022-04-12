@@ -86,6 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Username [description]"/>
+        <!-- Click listener for viewing all comments -->
         <TextView
             android:id="@+id/tv_view_more_comments"
             android:layout_width="match_parent"

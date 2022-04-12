@@ -1,4 +1,4 @@
-package com.gitbusters.pixelgram
+package com.gitbusters.pixelgram.landing_page
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,8 +7,9 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gitbusters.pixelgram.R
 
-class MainActivity : AppCompatActivity() {
+class LandingPage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Display the logo of the application
         super.onCreate(savedInstanceState)
