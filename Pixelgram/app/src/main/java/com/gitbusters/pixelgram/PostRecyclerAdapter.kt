@@ -3,6 +3,7 @@ package com.gitbusters.pixelgram
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,16 +13,15 @@ class PostRecyclerAdapter (private val postData: ArrayList<DummyPost>) : Recycle
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        // Post information
         val username : TextView = view.findViewById(R.id.username)
         val likeCount : TextView = view.findViewById(R.id.tv_like_count)
         val commentCount : TextView = view.findViewById(R.id.tv_comment_count)
+        val postImage : ImageView = view.findViewById(R.id.iv_post_image)
         val commentList : LinearLayout = view.findViewById(R.id.ll_comment_list)
 
-        init {
-            // Define click listener for the ViewHolder's View.
-            // In this case, clicking the post(?)
-
-        }
+        /* Define post click listeners below */
+        init {}
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -40,9 +40,8 @@ class PostRecyclerAdapter (private val postData: ArrayList<DummyPost>) : Recycle
         holder.username.text = post.username
         holder.likeCount.text = post.likeCount.toString() + " Likes"
         holder.commentCount.text = post.commentCount.toString() + " Comments"
+
     }
 
     override fun getItemCount() = postData.size
 }
-
-// Class for generating dummy data to test formatting

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -13,14 +14,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setLogo()
-
-        val dummyPosts = generateDummyData()
+        // Set up the recyclerview
+        /* DUMMY DATA */ val dummyPosts = generateDummyData()
         val recyclerView = findViewById<RecyclerView>(R.id.rv_post_list)
         recyclerView.layoutManager = LinearLayoutManager(this)
         val adapter = PostRecyclerAdapter(dummyPosts)
         recyclerView.adapter = adapter
 
     }
+
     /* Create the buttons on the toolbar */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -28,15 +30,21 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    /* Create the behavoir for clicking the toolbar buttons */
+    /* Create the behavior for clicking the toolbar buttons */
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        // TODO create click behavoirs
-        else -> {
-            super.onOptionsItemSelected(item)
+        // Skeleton functions for toolbar actions
+        R.id.action_new_post -> {
+            Toast.makeText(this, "New Post Button press", Toast.LENGTH_SHORT).show()
+            true
         }
+        R.id.action_profile -> {
+            Toast.makeText(this, "account button pressed", Toast.LENGTH_SHORT).show()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
-    // Sets the logo
+    /* Set the app logo on the toolbar */
     fun setLogo() {
         val toolbarTitle = " Pixelgram"
         supportActionBar!!.setDisplayShowHomeEnabled(true)
@@ -45,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.title = toolbarTitle
     }
 
+    /* Dummy Data generation */
     fun generateDummyData() : ArrayList<DummyPost> {
         val post1 = DummyPost("Ryan", 10, 20)
         val post2 = DummyPost("Ayman", 13, 66)
@@ -58,7 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-// For generating some dummy data.
+/* Dummy Data generation */
 class DummyPost(
     val username: String,
     val commentCount: Int,
