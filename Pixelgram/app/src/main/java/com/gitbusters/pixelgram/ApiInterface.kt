@@ -1,6 +1,6 @@
 package com.gitbusters.pixelgram
 
-import android.example.retrofitcoroutinesdemo.api.MainObject
+import com.gitbusters.pixelgram.api.MainObject
 import retrofit2.Call
 import retrofit2.http.GET
 

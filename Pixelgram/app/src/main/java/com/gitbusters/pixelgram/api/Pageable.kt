@@ -1,4 +1,4 @@
-package android.example.retrofitcoroutinesdemo.api
+package com.gitbusters.pixelgram.api
 
 data class Pageable(
     val offset: Int,
