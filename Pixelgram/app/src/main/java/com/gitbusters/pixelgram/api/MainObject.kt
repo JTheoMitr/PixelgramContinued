@@ -1,7 +1,7 @@
 package android.example.retrofitcoroutinesdemo.api
 
 data class MainObject(
-    val content: List<MyDataItem>,
+    val content: List<Post>,
     val empty: Boolean,
     val first: Boolean,
     val last: Boolean,

@@ -1,6 +1,6 @@
 package android.example.retrofitcoroutinesdemo.api
 
-data class MyDataItem(
+data class Post(
     val author: Author,
     val comments: Comments,
     val createdOn: String,

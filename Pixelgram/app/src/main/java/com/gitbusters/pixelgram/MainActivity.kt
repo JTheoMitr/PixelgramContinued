@@ -18,6 +18,7 @@ import java.lang.Exception
 const val BASE_URL = "http://34.134.148.105/"
 
 class MainActivity : AppCompatActivity() {
+    //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
         // Display the logo of the application
         supportActionBar!!.setDisplayShowHomeEnabled(true)
@@ -32,8 +33,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //BACK_END: Method to build retrofit instance and create calls
     private fun getCurrentData() {
 
+        //BACK_END: Building our retrofit Builder instance
         val api = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -42,16 +45,24 @@ class MainActivity : AppCompatActivity() {
 
         MainScope().launch(Dispatchers.IO) {
             try {
+                //BACK_END: Calling our getPosts method from the API Interface
                 val response = api.getPosts().awaitResponse()
                 if (response.isSuccessful) {
                     val data = response.body()!!
                     Log.d(TAG, data.content.toString())
 
+                    //BACK_END: For POSTS data: the array of incoming posts is data.content
+                    //BACK_END: Here we are binding the first post's caption to a TextView to confirm data is flowing properly
+                    //BACK_END: TextView can be commented out once data is bound properly with adapter
+                    //BACK_END: The data class for Post lives in the api folder
                     withContext(Dispatchers.Main) {
                         textView.text = data.content[0].message
                     }
                 }
-            } catch (e: Exception) {
+
+            }
+            //BACK_END: Handling call errors
+            catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
                 }
