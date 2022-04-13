@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="20dp"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/profilePicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_profilePic"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
 
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
@@ -21,10 +22,12 @@
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:layout_toRightOf="@+id/profilePicture"
-        android:text="ruthful"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@+id/iv_profilePic"
+        android:text="ruthful" />
 
     <ImageButton
         android:id="@+id/btn_post_options"
@@ -43,9 +46,9 @@
     <ImageView
         android:id="@+id/iv_post_image"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@+id/profilePicture"
-        android:scaleType="centerCrop"
+        android:layout_height="400dp"
+        android:layout_below="@+id/iv_profilePic"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_launcher_background" />
     <ImageButton
         android:id="@+id/btn_like_post"
@@ -75,27 +78,36 @@
         android:layout_marginBottom="10dp"
         android:layout_toEndOf="@id/tv_like_count"
         android:text="14 Comments" />
+
     <LinearLayout
         android:id="@+id/ll_comment_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/btn_like_post">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_below="@id/btn_like_post"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_author_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Username [description]"/>
+            android:text="Username [description]" />
         <!-- Click listener for viewing all comments -->
         <TextView
             android:id="@+id/tv_view_more_comments"
             android:layout_width="match_parent"
-            android:textStyle="italic"
             android:layout_height="wrap_content"
-            android:text="@string/view_more_comments"/>
+            android:text="@string/view_more_comments"
+            android:textStyle="italic" />
         <!-- Fill with comment_item.xml -->
 
     </LinearLayout>
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_below="@id/ll_comment_list"
+        android:layout_margin="10dp"
+        android:layout_height="wrap_content"/>
 
 
 

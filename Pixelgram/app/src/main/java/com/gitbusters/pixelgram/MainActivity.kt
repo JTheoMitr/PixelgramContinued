@@ -31,13 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         getCurrentData()
-
-        /* DUMMY DATA */ val dummyPosts = generateDummyData()
         setLogo()
-        val recyclerView = findViewById<RecyclerView>(R.id.rv_post_list)
-        recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
-        val adapter = PostRecyclerAdapter(dummyPosts)
-        recyclerView.adapter = adapter
 
 
     }
@@ -57,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                 //BACK_END: Calling our getPosts method from the API Interface
                 //BACK_END: .getPosts() takes in pageNumber and pageSize
 
-                val response = api.getPosts(1,5).awaitResponse()
+                val response = api.getPosts(1, 5).awaitResponse()
                 if (response.isSuccessful) {
                     val data = response.body()!!
                     Log.d(TAG, data.content.toString())
@@ -68,6 +62,13 @@ class MainActivity : AppCompatActivity() {
                     //BACK_END: The data class for Post lives in the api folder
                     withContext(Dispatchers.Main) {
                         // textView.text = data.content[0].message
+                        Log.d("DATA", data.content.toString())
+                        //FRONT_END Populate the recyclerview
+                        rv_post_list.layoutManager = LinearLayoutManager(this@MainActivity)
+                        val adapter = PostRecyclerAdapter(data.content)
+                        rv_post_list.adapter = adapter
+
+
                     }
                 }
 
@@ -110,24 +111,4 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayUseLogoEnabled(true)
         supportActionBar!!.title = toolbarTitle
     }
-
-    /* Dummy Data generation */
-    fun generateDummyData() : ArrayList<DummyPost> {
-        val post1 = DummyPost("Ryan", 10, 20)
-        val post2 = DummyPost("Ayman", 13, 66)
-        val post3 = DummyPost("Tyler", 1, 123)
-
-        val list = arrayListOf<DummyPost>()
-        list.add(post1)
-        list.add(post2)
-        list.add(post3)
-        return list
-    }
 }
-
-/* Dummy Data generation */
-class DummyPost(
-    val username: String,
-    val commentCount: Int,
-    val likeCount: Int
-)
