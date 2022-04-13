@@ -67,8 +67,6 @@ class MainActivity : AppCompatActivity() {
                         rv_post_list.layoutManager = LinearLayoutManager(this@MainActivity)
                         val adapter = PostRecyclerAdapter(data.content)
                         rv_post_list.adapter = adapter
-
-
                     }
                 }
 
