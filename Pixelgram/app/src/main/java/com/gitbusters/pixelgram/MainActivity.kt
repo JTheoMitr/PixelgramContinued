@@ -20,6 +20,7 @@ import java.lang.Exception
 const val BASE_URL = "http://34.134.148.105/"
 
 class MainActivity : AppCompatActivity() {
+
     //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
         // Display the logo of the application
@@ -30,8 +31,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        getCurrentData()
-
+        //getCurrentData()
+        getPostComments()
         /* DUMMY DATA */ val dummyPosts = generateDummyData()
         setLogo()
         val recyclerView = findViewById<RecyclerView>(R.id.rv_post_list)
@@ -80,6 +81,44 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    //BACK_END: Method to build retrofit instance and get comments
+    private fun getPostComments() {
+
+        //BACK_END: Building our retrofit Builder instance
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+
+        MainScope().launch(Dispatchers.IO) {
+            try {
+
+        //BACK_END: Pass in postId,pageNumber,pageSize
+
+                val response = api.getComments(11,0,5).awaitResponse()
+                if (response.isSuccessful) {
+
+                    val data = response.body()!!
+                   Log.d(TAG,data.content.toString())
+
+                    withContext(Dispatchers.Main) {
+                        //BACK_END: All main thread activity
+                    }
+                }
+
+            }
+            //BACK_END: Handling call errors
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+
 
     /* On creation of the app bar */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
