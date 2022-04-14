@@ -100,8 +100,7 @@
             android:id="@+id/tv_view_more_comments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/view_more_comments"
-            android:textStyle="italic" />
+            android:text="@string/view_more_comments" />
         <!-- Fill with comment_item.xml -->
 
     </LinearLayout>
