@@ -20,6 +20,7 @@ import android.text.SpannableStringBuilder
 import androidx.annotation.Nullable
 import androidx.core.text.bold
 import com.bumptech.glide.request.target.Target
+import com.gitbusters.pixelgram.api.Content
 
 
 // Build the recyclerview with post_items
@@ -51,7 +52,6 @@ class PostRecyclerAdapter (private val postData: List<Post>) : RecyclerView.Adap
     // Replace the contents within the view, in this case the post information.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
-        val commentItem : TextView
         // Set the contents of the view.
         // Get the current post
         val post = postData[position]
@@ -65,8 +65,28 @@ class PostRecyclerAdapter (private val postData: List<Post>) : RecyclerView.Adap
             .append(" " + post.message)
         holder.postDesc.text = description
         Log.d("COMMENTS", post.comments.toString())
+        loadComments(post.comments.content, context, holder)
 
     }
+
+    /* Load the first 5 comments of the post */
+    private fun loadComments(content: List<Content>, context: Context, holder: ViewHolder) {
+        for (c in content) {
+            val comment = SpannableStringBuilder()
+                .bold{ append(c.author.username) }
+                .append(" " + c.message)
+            // Progrimatically create a textview
+            val textView = TextView(context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                text = comment
+            }
+            holder.commentList.addView(textView)
+        }
+    }
+
     // Maybe make this asynchronous?  I'm not sure right now
     private fun loadImages(post: Post, context: Context, holder: ViewHolder){
     // Load the profile picture
