@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Pixelgram</string>
-    <string name="view_more_comments">View More Comments</string>
+    <string name="view_more_comments"><u>View More Comments</u></string>
     <string name="incoming_data">Incoming Data</string>
 </resources>

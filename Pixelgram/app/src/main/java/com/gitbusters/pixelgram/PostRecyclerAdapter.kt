@@ -17,27 +17,36 @@ import com.bumptech.glide.request.RequestListener
 import com.gitbusters.pixelgram.api.Post
 import android.graphics.Bitmap
 import android.text.SpannableStringBuilder
+import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.core.text.bold
 import com.bumptech.glide.request.target.Target
+import com.gitbusters.pixelgram.api.Content
 
 
 // Build the recyclerview with post_items
 class PostRecyclerAdapter (private val postData: List<Post>) : RecyclerView.Adapter<PostRecyclerAdapter.ViewHolder>() {
 
+
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         // Post information
+        // Change this to view binding later.
         val username : TextView = view.findViewById(R.id.username)
         val likeCount : TextView = view.findViewById(R.id.tv_like_count)
         val commentCount : TextView = view.findViewById(R.id.tv_comment_count)
         val postImage : ImageView = view.findViewById(R.id.iv_post_image)
         val pfpImage : ImageView = view.findViewById(R.id.iv_profilePic)
         val postDesc : TextView = view.findViewById(R.id.tv_author_desc)
+        val viewMoreBtn : TextView = view.findViewById(R.id.tv_view_more_comments)
         val commentList : LinearLayout = view.findViewById(R.id.ll_comment_list)
 
         /* Define post click listeners below */
-        init {}
+        init {
+            // Viewing more comments
+        }
+
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -51,7 +60,6 @@ class PostRecyclerAdapter (private val postData: List<Post>) : RecyclerView.Adap
     // Replace the contents within the view, in this case the post information.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
-        val commentItem : TextView
         // Set the contents of the view.
         // Get the current post
         val post = postData[position]
@@ -64,9 +72,33 @@ class PostRecyclerAdapter (private val postData: List<Post>) : RecyclerView.Adap
             .bold{ append(post.author.username) }
             .append(" " + post.message)
         holder.postDesc.text = description
-        Log.d("COMMENTS", post.comments.toString())
+        loadComments(post.comments.content, context, holder)
+
+        // Click listener for comments, a bit messy but functional.  For a larger scale, implement an interface.
+        holder.viewMoreBtn.setOnClickListener {
+            Toast.makeText(context, post.id.toString(), Toast.LENGTH_SHORT).show()
+        }
 
     }
+
+    /* Load the first 5 comments of the post */
+    private fun loadComments(content: List<Content>, context: Context, holder: ViewHolder) {
+        for (c in content) {
+            val comment = SpannableStringBuilder()
+                .bold{ append(c.author.username) }
+                .append(" " + c.message)
+            // Progrimatically create a textview
+            val textView = TextView(context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                text = comment
+            }
+            holder.commentList.addView(textView)
+        }
+    }
+
     // Maybe make this asynchronous?  I'm not sure right now
     private fun loadImages(post: Post, context: Context, holder: ViewHolder){
     // Load the profile picture
