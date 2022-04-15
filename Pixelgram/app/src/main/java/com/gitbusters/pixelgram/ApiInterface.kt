@@ -24,11 +24,12 @@ interface ApiInterface {
     ):Call<CommentObject>
 
 
-    @Headers(
-        "username: GitBusters",
-        "password: GitBustersPass"
-    )
+    @FormUrlEncoded
     @POST("oauth/token")
-    fun getTokenData():Call<TokenObject>
+    fun getTokenData(
+        @Field ("username") username: String,
+        @Field ("password") password: String
+
+    ):Call<TokenObject>
 
 }

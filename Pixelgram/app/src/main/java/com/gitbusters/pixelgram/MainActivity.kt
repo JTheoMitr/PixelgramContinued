@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("LAUNCH", "we are gonna try")
 
                 //Call getTokenData from API and log refresh token
-                val response = api.getTokenData().awaitResponse()
+                val response = api.getTokenData("GitBusters","GitBustersPass").awaitResponse()
                 Log.d("TOKEN_PRE", response.toString())
                 if (response.isSuccessful) {
                     val data = response.body()!!
