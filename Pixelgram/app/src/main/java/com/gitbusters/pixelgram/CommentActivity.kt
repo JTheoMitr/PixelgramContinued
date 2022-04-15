@@ -21,6 +21,7 @@ class CommentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comment)
+        title = "Comments"
         val postid = intent.getIntExtra("postid", 1)
         getPostComments(postid)
 
