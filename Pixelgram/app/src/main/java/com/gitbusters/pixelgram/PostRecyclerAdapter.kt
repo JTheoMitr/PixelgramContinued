@@ -1,6 +1,7 @@
 package com.gitbusters.pixelgram
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
@@ -77,6 +78,10 @@ class PostRecyclerAdapter (private val postData: List<Post>) : RecyclerView.Adap
         // Click listener for comments, a bit messy but functional.  For a larger scale, implement an interface.
         holder.viewMoreBtn.setOnClickListener {
             Toast.makeText(context, post.id.toString(), Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, CommentActivity::class.java)
+            intent.putExtra("postid", post.id)
+            context.startActivity(intent)
+
         }
 
     }

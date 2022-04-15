@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gitbusters.pixelgram">
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true"
-        android:logo="@drawable/ic_pixelgram_logo"
         android:label="@string/app_name"
+        android:logo="@drawable/ic_pixelgram_logo"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Pixelgram">
+        android:theme="@style/Theme.Pixelgram"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".CommentActivity"
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
