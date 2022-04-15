@@ -80,41 +80,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getPostComments() {
-
-        //BACK_END: Building our retrofit Builder instance
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiInterface::class.java)
-
-        MainScope().launch(Dispatchers.IO) {
-            try {
-
-                //BACK_END: Pass in postId,pageNumber,pageSize
-
-                val response = api.getComments(11,0,5).awaitResponse()
-                if (response.isSuccessful) {
-
-                    val data = response.body()!!
-                    Log.d(TAG,data.content.toString())
-
-                    withContext(Dispatchers.Main) {
-                        //BACK_END: All main thread activity
-                    }
-                }
-
-            }
-            //BACK_END: Handling call errors
-            catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
-
     /* On creation of the app bar */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
