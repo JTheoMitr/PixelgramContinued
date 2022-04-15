@@ -3,10 +3,9 @@ package com.gitbusters.pixelgram
 import com.gitbusters.pixelgram.api.CommentObject
 import com.gitbusters.pixelgram.api.Comments
 import com.gitbusters.pixelgram.api.MainObject
+import com.gitbusters.pixelgram.api.TokenObject
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiInterface {
     @GET("posts")
@@ -23,5 +22,13 @@ interface ApiInterface {
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int,
     ):Call<CommentObject>
+
+
+    @Headers(
+        "username: GitBusters",
+        "password: GitBustersPass"
+    )
+    @POST("oauth/token")
+    fun getTokenData():Call<TokenObject>
 
 }

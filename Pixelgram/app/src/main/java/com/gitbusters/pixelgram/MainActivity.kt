@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         getCurrentData()
         setLogo()
+        getTokenData()
 
 
     }
@@ -75,6 +76,40 @@ class MainActivity : AppCompatActivity() {
             catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    //BACK_END: Method to build retrofit instance retrieve current user's refresh token
+    private fun getTokenData() {
+
+        //BACK_END: Building our retrofit Builder instance
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                Log.d("LAUNCH", "we are gonna try")
+
+                //Call getTokenData from API and log refresh token
+                val response = api.getTokenData().awaitResponse()
+                Log.d("TOKEN_PRE", response.toString())
+                if (response.isSuccessful) {
+                    val data = response.body()!!
+                    withContext(Dispatchers.Main) {
+                        Log.d("TOKEN", data.refresh_token.toString())
+                    }
+                }
+            }
+            //BACK_END: Handling call errors
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
+                    Log.d("TOKEN_ERROR", e.message.toString())
                 }
             }
         }
