@@ -50,8 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_below="@+id/post_header"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background" />
+        android:scaleType="centerCrop" />
     <ImageButton
         android:id="@+id/btn_like_post"
         android:layout_width="wrap_content"
