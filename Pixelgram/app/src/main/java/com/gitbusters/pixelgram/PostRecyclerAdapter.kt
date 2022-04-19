@@ -26,9 +26,13 @@ import com.gitbusters.pixelgram.api.Content
 
 
 // Build the recyclerview with post_items
-class PostRecyclerAdapter (private val postData: List<Post>) : RecyclerView.Adapter<PostRecyclerAdapter.ViewHolder>() {
+class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adapter<PostRecyclerAdapter.ViewHolder>() {
 
 
+    fun setPostData(postData: List<Post>){
+        this.postData = postData
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 

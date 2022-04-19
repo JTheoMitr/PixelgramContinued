@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gitbusters.pixelgram.api.Post
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -20,8 +21,16 @@ import java.lang.Exception
 const val BASE_URL = "http://34.134.148.105/"
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var layoutManager: LinearLayoutManager
+    lateinit var adapter: PostRecyclerAdapter
+    var page = 0
+    var limit = 10
+    var isLoading = false
+
     //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
+
         // Display the logo of the application
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.setLogo(R.drawable.ic_pixelgram_logo)
@@ -30,8 +39,40 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val recyclerView = findViewById<RecyclerView>(R.id.rv_post_list)
+       // recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+        layoutManager = LinearLayoutManager(this@MainActivity)
+        recyclerView.layoutManager = layoutManager
+        val adapter = PostRecyclerAdapter(listOf<Post>())
+        recyclerView.adapter = adapter
+
+
+
+
         getCurrentData()
         setLogo()
+
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy >0) {
+                    val visibleItemCount = layoutManager?.childCount
+                    val pastVisibleItem = layoutManager.findFirstCompletelyVisibleItemPosition()
+                    val total = adapter.itemCount
+
+                    if (!isLoading) {
+                        if (visibleItemCount != null) {
+                            if((visibleItemCount + pastVisibleItem) >= total){
+                                page++
+                                getPage()
+                            }
+                        }
+                    }
+                }
+
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        })
+
 
 
     }
@@ -54,6 +95,7 @@ class MainActivity : AppCompatActivity() {
                 val response = api.getPosts(1, 5).awaitResponse()
                 if (response.isSuccessful) {
                     val data = response.body()!!
+                    adapter.setPostData(data.content)
                     Log.d(TAG, data.content.toString())
 
                     //BACK_END: For POSTS data: the array of incoming posts is data.content
@@ -64,9 +106,7 @@ class MainActivity : AppCompatActivity() {
                         // textView.text = data.content[0].message
                         Log.d("DATA", data.content.toString())
                         //FRONT_END Populate the recyclerview
-                        rv_post_list.layoutManager = LinearLayoutManager(this@MainActivity)
-                        val adapter = PostRecyclerAdapter(data.content)
-                        rv_post_list.adapter = adapter
+
                     }
                 }
 
@@ -79,6 +119,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun getPage() {
+        val newPage = getCurrentData()
+       // adapter = PostRecyclerAdapter(newPage as List<Post>)
+       // findViewById<RecyclerView>(R.id.rv_post_list).adapter = adapter
+
+    }
+
 
     /* On creation of the app bar */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
