@@ -5,9 +5,10 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="buttonStyle">@style/btnStyle</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/btn_blue</item>
+        <item name="colorSecondaryVariant">@color/btn_blue</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:actionBarStyle">@style/Theme.PixelgramActionBar</item>
         <!-- Status bar color. -->
@@ -23,5 +24,10 @@
     <style name="roundedImageViewRounded">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+    <style name="btnStyle" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/btn_blue</item>
+        <item name="background">@color/btn_blue</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 </resources>
