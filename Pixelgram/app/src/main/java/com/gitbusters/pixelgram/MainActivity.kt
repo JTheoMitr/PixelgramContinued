@@ -96,53 +96,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //BACK_END: Method to build retrofit instance retrieve current user's refresh token
-//    private fun getTokenData() {
-//
-//        //BACK_END: Building our retrofit Builder instance
-//        val api = Retrofit.Builder()
-//            .baseUrl(BASE_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//            .create(ApiInterface::class.java)
-//
-//        MainScope().launch(Dispatchers.IO) {
-//            try {
-//                Log.d("LAUNCH", "we are gonna try")
-//
-//                //Call getTokenData from API and log refresh token
-//                val response = api.getTokenData("GitBusters","GitBustersPass").awaitResponse()
-//                Log.d("TOKEN_PRE", response.toString())
-//                if (response.isSuccessful) {
-//                    val data = response.body()!!
-//                    withContext(Dispatchers.Main) {
-//                        Log.d("TOKEN", data.refresh_token.toString())
-//                    }
-//                    lifecycleScope.launch {
-//                        dataStore = createDataStore(name = "settings")
-//                        save("refresh_token",
-//                            data.refresh_token)
-//                        // will be data.refresh_token after we add getTokenData (not binding.etSaveKey)
-//
-//                    }
-//                    val intent = Intent(this, MainActivity::class.java)
-//                    startActivity(intent)
-//                }
-//            }
-//            //BACK_END: Handling call errors
-//            catch (e: Exception) {
-//                withContext(Dispatchers.Main) {
-//                    Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
-//                    Log.d("TOKEN_ERROR", e.message.toString())
-//                }
-//            }
-//        }
-//        lifecycleScope.launch {
-//            val value = read("refresh_token")
-//            Log.d("placeholderToken", value.toString())
-//        }
-//    }
-
 
     /* On creation of the app bar */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
