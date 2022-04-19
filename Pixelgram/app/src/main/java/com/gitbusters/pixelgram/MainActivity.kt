@@ -1,17 +1,25 @@
 package com.gitbusters.pixelgram
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.createDataStore
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,6 +28,9 @@ import java.lang.Exception
 const val BASE_URL = "http://34.134.148.105/"
 
 class MainActivity : AppCompatActivity() {
+
+    //lateinit for dataStore
+    private lateinit var dataStore: DataStore<Preferences>
     //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
         // Display the logo of the application
@@ -27,12 +38,16 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setLogo(R.drawable.ic_pixelgram_logo)
         supportActionBar!!.setDisplayUseLogoEnabled(true)
         supportActionBar!!.setTitle(" Pixelgram")
+        dataStore = createDataStore(name = "settings")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         getCurrentData()
         setLogo()
-        getTokenData()
+        //getTokenData()
+
+
+
 
 
     }
@@ -82,38 +97,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     //BACK_END: Method to build retrofit instance retrieve current user's refresh token
-    private fun getTokenData() {
+//    private fun getTokenData() {
+//
+//        //BACK_END: Building our retrofit Builder instance
+//        val api = Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(ApiInterface::class.java)
+//
+//        MainScope().launch(Dispatchers.IO) {
+//            try {
+//                Log.d("LAUNCH", "we are gonna try")
+//
+//                //Call getTokenData from API and log refresh token
+//                val response = api.getTokenData("GitBusters","GitBustersPass").awaitResponse()
+//                Log.d("TOKEN_PRE", response.toString())
+//                if (response.isSuccessful) {
+//                    val data = response.body()!!
+//                    withContext(Dispatchers.Main) {
+//                        Log.d("TOKEN", data.refresh_token.toString())
+//                    }
+//                    lifecycleScope.launch {
+//                        dataStore = createDataStore(name = "settings")
+//                        save("refresh_token",
+//                            data.refresh_token)
+//                        // will be data.refresh_token after we add getTokenData (not binding.etSaveKey)
+//
+//                    }
+//                    val intent = Intent(this, MainActivity::class.java)
+//                    startActivity(intent)
+//                }
+//            }
+//            //BACK_END: Handling call errors
+//            catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
+//                    Log.d("TOKEN_ERROR", e.message.toString())
+//                }
+//            }
+//        }
+//        lifecycleScope.launch {
+//            val value = read("refresh_token")
+//            Log.d("placeholderToken", value.toString())
+//        }
+//    }
 
-        //BACK_END: Building our retrofit Builder instance
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiInterface::class.java)
-
-        MainScope().launch(Dispatchers.IO) {
-            try {
-                Log.d("LAUNCH", "we are gonna try")
-
-                //Call getTokenData from API and log refresh token
-                val response = api.getTokenData("GitBusters","GitBustersPass").awaitResponse()
-                Log.d("TOKEN_PRE", response.toString())
-                if (response.isSuccessful) {
-                    val data = response.body()!!
-                    withContext(Dispatchers.Main) {
-                        Log.d("TOKEN", data.refresh_token.toString())
-                    }
-                }
-            }
-            //BACK_END: Handling call errors
-            catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
-                    Log.d("TOKEN_ERROR", e.message.toString())
-                }
-            }
-        }
-    }
 
     /* On creation of the app bar */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
