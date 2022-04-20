@@ -9,8 +9,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gitbusters.pixelgram.api.Post
-import com.google.gson.Gson
+import com.bumptech.glide.load.engine.executor.GlideExecutor.UncaughtThrowableStrategy.LOG
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
@@ -23,9 +22,10 @@ const val BASE_URL = "http://34.134.148.105/"
 class MainActivity : AppCompatActivity() {
 
     lateinit var layoutManager: LinearLayoutManager
-    lateinit var adapter: PostRecyclerAdapter
+    //lateinit var adapter: PostRecyclerAdapter
+    var adapter = PostRecyclerAdapter(listOf()) // listOf<Post>()
     var page = 0
-    var limit = 10
+    //var limit = 10
     var isLoading = false
 
     //BACK_END: Added coroutine scope to project:
@@ -43,7 +43,9 @@ class MainActivity : AppCompatActivity() {
        // recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         layoutManager = LinearLayoutManager(this@MainActivity)
         recyclerView.layoutManager = layoutManager
-        val adapter = PostRecyclerAdapter(listOf<Post>())
+
+
+
         recyclerView.adapter = adapter
 
 
@@ -63,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                         if (visibleItemCount != null) {
                             if((visibleItemCount + pastVisibleItem) >= total){
                                 page++
-                                getPage()
+                                getPage(page)
                             }
                         }
                     }
@@ -93,10 +95,17 @@ class MainActivity : AppCompatActivity() {
                 //BACK_END: .getPosts() takes in pageNumber and pageSize
 
                 val response = api.getPosts(1, 5).awaitResponse()
+
                 if (response.isSuccessful) {
                     val data = response.body()!!
+
+
                     adapter.setPostData(data.content)
                     Log.d(TAG, data.content.toString())
+                    // create new linear layout manager
+                    rv_post_list.layoutManager = LinearLayoutManager(this@MainActivity)
+
+                   // rv_post_list.adapter = adapter
 
                     //BACK_END: For POSTS data: the array of incoming posts is data.content
                     //BACK_END: Here we are binding the first post's caption to a TextView to confirm data is flowing properly
@@ -106,6 +115,13 @@ class MainActivity : AppCompatActivity() {
                         // textView.text = data.content[0].message
                         Log.d("DATA", data.content.toString())
                         //FRONT_END Populate the recyclerview
+
+                        // create new recycler adapter passing data from API
+                        //val adapter = PostRecyclerAdapter(data.content)
+
+                        // set post list to adapter
+                        //rv_post_list.adapter = adapter
+
 
                     }
                 }
@@ -120,10 +136,50 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getPage() {
-        val newPage = getCurrentData()
-       // adapter = PostRecyclerAdapter(newPage as List<Post>)
-       // findViewById<RecyclerView>(R.id.rv_post_list).adapter = adapter
+    fun getPage(pageNum: Int) {
+        //BACK_END: Building our retrofit Builder instance
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                //BACK_END: Calling our getPosts method from the API Interface
+                //BACK_END: .getPosts() takes in pageNumber and pageSize
+
+                val response = api.getPosts(pageNum, 5).awaitResponse()
+
+                if (response.isSuccessful) {
+                    val data = response.body()!!
+
+
+                    adapter.setPostData(data.content)
+                    Log.d(TAG, data.content.toString())
+                    // create new linear layout manager
+                    rv_post_list.layoutManager = LinearLayoutManager(this@MainActivity)
+
+                    //BACK_END: For POSTS data: the array of incoming posts is data.content
+                    //BACK_END: Here we are binding the first post's caption to a TextView to confirm data is flowing properly
+                    //BACK_END: TextView can be commented out once data is bound properly with adapter
+                    //BACK_END: The data class for Post lives in the api folder
+                    withContext(Dispatchers.Main) {
+                        // textView.text = data.content[0].message
+                        Log.d("DATA", data.content.toString())
+                        //FRONT_END Populate the recyclerview
+                    }
+                }
+
+            }
+            //BACK_END: Handling call errors
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
 
     }
 
