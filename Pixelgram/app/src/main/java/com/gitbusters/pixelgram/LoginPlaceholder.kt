@@ -12,7 +12,6 @@ import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.lifecycleScope
 import com.gitbusters.pixelgram.databinding.ActivityLoginPlaceholderBinding
-import com.gitbusters.pixelgram.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
