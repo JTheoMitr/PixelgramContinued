@@ -3,6 +3,8 @@ package com.gitbusters.pixelgram
 import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -23,20 +25,14 @@ const val BASE_URL = "http://34.134.148.105/"
 class MainActivity : AppCompatActivity() {
 
     lateinit var layoutManager: LinearLayoutManager
-    //lateinit var adapter: PostRecyclerAdapter
     var adapter = PostRecyclerAdapter(listOf()) // listOf<Post>()
-    var page = 1
-    //var limit = 10
+    var page = 0
     var isLoading = false
 
     //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
 
         // Display the logo of the application
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setLogo(R.drawable.ic_pixelgram_logo)
-        supportActionBar!!.setDisplayUseLogoEnabled(true)
-        supportActionBar!!.setTitle(" Pixelgram")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -52,7 +48,8 @@ class MainActivity : AppCompatActivity() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
-                    page++
+                    // When the recyclerview gets to the bottom
+                    page++ // Increment the page number.
                     updateCurrentData(page, adapter)
                     Toast.makeText(this@MainActivity, "$page", Toast.LENGTH_LONG).show()
                 }
@@ -98,7 +95,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show()
 
     }
 

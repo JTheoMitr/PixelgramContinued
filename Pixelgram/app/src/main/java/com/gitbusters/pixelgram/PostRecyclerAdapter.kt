@@ -31,16 +31,13 @@ import android.widget.ProgressBar
 // Build the recyclerview with post_items
 class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adapter<PostRecyclerAdapter.ViewHolder>() {
 
-
     fun setPostData(postData: List<Post>){
         val newData : List<Post> = this.postData.plus(postData)
         this.postData = newData
         notifyDataSetChanged()
-
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         // Post information
         // Change this to view binding later.
         val username : TextView = view.findViewById(R.id.username)
@@ -73,7 +70,7 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
         // Set the contents of the view.
         // Get the current post
         val post = postData[position]
-        Log.d("POSTURL", post.imageUrl)
+       // Log.d("POSTURL", post.imageUrl)
         loadImages(post, context, holder)
         holder.username.text = post.author.username
         holder.likeCount.text = post.likeCount.toString() + " Likes"
@@ -147,10 +144,6 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
                 }
             })
             .into(holder.postImage)
-    }
-
-    fun addLoadingView() {
-        Handler().post
     }
 
 
