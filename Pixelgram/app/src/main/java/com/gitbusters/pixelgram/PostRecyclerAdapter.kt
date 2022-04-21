@@ -7,9 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -18,11 +15,17 @@ import com.bumptech.glide.request.RequestListener
 import com.gitbusters.pixelgram.api.Post
 import android.graphics.Bitmap
 import android.text.SpannableStringBuilder
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.Nullable
 import androidx.core.text.bold
 import com.bumptech.glide.request.target.Target
 import com.gitbusters.pixelgram.api.Content
+import androidx.annotation.NonNull
+
+import android.widget.ProgressBar
+
+
+
 
 
 // Build the recyclerview with post_items
@@ -30,7 +33,8 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
 
 
     fun setPostData(postData: List<Post>){
-        this.postData = postData
+        val newData : List<Post> = this.postData.plus(postData)
+        this.postData = newData
         notifyDataSetChanged()
 
     }
@@ -78,7 +82,7 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
             .bold{ append(post.author.username) }
             .append(" " + post.message)
         holder.postDesc.text = description
-        loadComments(post.comments.content, context, holder)
+        // loadComments(post.comments.content, context, holder)
 
         // Click listener for comments, a bit messy but functional.  For a larger scale, implement an interface.
         holder.viewMoreBtn.setOnClickListener {
@@ -144,6 +148,12 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
             })
             .into(holder.postImage)
     }
+
+    fun addLoadingView() {
+        Handler().post
+    }
+
+
 
     override fun getItemCount() = postData.size
 }
