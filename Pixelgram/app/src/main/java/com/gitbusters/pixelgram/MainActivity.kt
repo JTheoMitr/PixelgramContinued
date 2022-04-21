@@ -7,9 +7,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.createDataStore
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
@@ -20,6 +21,12 @@ import java.lang.Exception
 const val BASE_URL = "http://34.134.148.105/"
 
 class MainActivity : AppCompatActivity() {
+    //BACK_END: Disabled Back button on landing page
+    override fun onBackPressed() {}
+
+
+    //lateinit for dataStore
+    private lateinit var dataStore: DataStore<Preferences>
     //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
         // Display the logo of the application
@@ -27,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setLogo(R.drawable.ic_pixelgram_logo)
         supportActionBar!!.setDisplayUseLogoEnabled(true)
         supportActionBar!!.setTitle(" Pixelgram")
+        dataStore = createDataStore(name = "settings")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -79,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     /* On creation of the app bar */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
