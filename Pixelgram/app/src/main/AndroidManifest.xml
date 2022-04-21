@@ -11,7 +11,7 @@
         android:logo="@drawable/ic_pixelgram_logo"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Pixelgram"
+        android:theme="@style/Theme.AppSplash"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".CommentActivity"

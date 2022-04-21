@@ -16,6 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 const val BASE_URL = "http://34.134.148.105/"
 
@@ -23,17 +24,12 @@ class MainActivity : AppCompatActivity() {
     //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
         // Display the logo of the application
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setLogo(R.drawable.ic_pixelgram_logo)
-        supportActionBar!!.setDisplayUseLogoEnabled(true)
-        supportActionBar!!.setTitle(" Pixelgram")
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContentView(R.layout.activity_main)
 
         getCurrentData()
         setLogo()
-
-
     }
 
     //BACK_END: Method to build retrofit instance and create calls
