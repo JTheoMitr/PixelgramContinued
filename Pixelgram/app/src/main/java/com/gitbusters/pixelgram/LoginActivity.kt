@@ -1,10 +1,18 @@
 package com.gitbusters.pixelgram
 
+import android.content.ContentValues
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -29,22 +37,79 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var dataStore: DataStore<Preferences>
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-        //login button
+        //BACK_END: Network was never reached, default case
         binding.btnLogin.setOnClickListener {
             lifecycleScope.launch {
-                dataStore = createDataStore(name = "settings")
-                getTokenData()
-                // will be data.refresh_token after we add getTokenData (not binding.etSaveKey)
+                Toast.makeText(this@LoginActivity, "Device is Offline", Toast.LENGTH_LONG).show()
+                Log.d(ContentValues.TAG,"Its not available")
+                if((Settings.System.getInt(contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1)) {
+                    Log.d("Airplane Mode", "Airplane mode is on")
+                    Toast.makeText(this@LoginActivity, "Airplane Mode is on", Toast.LENGTH_LONG).show()
+                }}}
+
+
+
+        //BACK_END: Network Request Builder
+        val networkRequest = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) //Indicates that this network should be able to reach the internet.
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI) //Indicates this network uses a Wi-Fi transport.
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR) //Indicates this network uses a cellular transport.(costly)
+            .build()
+
+
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+
+        //BACK_END: Network is available for use
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                Log.d(ContentValues.TAG,"Its available!")
+                binding.btnLogin.setOnClickListener {
+                    lifecycleScope.launch {
+                        dataStore = createDataStore(name = "settings")
+                        getTokenData()
+                    }
+                }
+            }
+
+        //BACK_END: Network capabilities have changed and logged
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) {
+                super.onCapabilitiesChanged(network, networkCapabilities)
+                val unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+                Log.d(ContentValues.TAG,"change")
+                Log.d("Unmetered",unmetered.toString())
 
             }
+
+
+        //BACK_END: Lost Network Connection, Toast and check for airplane mode
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                binding.btnLogin.setOnClickListener {
+                    lifecycleScope.launch {
+                        Toast.makeText(this@LoginActivity, "No Internet Connection", Toast.LENGTH_LONG).show()
+                        Log.d(ContentValues.TAG,"Its not available")
+                        if((Settings.System.getInt(contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1)) {
+                            Log.d("Airplane Mode", "Airplane mode is on")
+                            Toast.makeText(this@LoginActivity, "Airplane Mode is on", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
         }
+
+        //BACK_END: ConnectivityManger making network request
+        val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        connectivityManager.requestNetwork(networkRequest, networkCallback)
 
     }
 
@@ -62,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
             try {
                 Log.d("LAUNCH", "we are gonna try")
 
-                //Call getTokenData from API and log refresh token
+        //BACK_END:  Call getTokenData from API and log refresh token
                 val response = api.getTokenData("GitBusters","GitBustersPass").awaitResponse()
                 Log.d("TOKEN_PRE", response.toString())
                 if (response.isSuccessful) {
@@ -76,7 +141,7 @@ class LoginActivity : AppCompatActivity() {
                             data.refresh_token)
 
                     }
-                    //BACK_END will eventually use this to navigate to main activity
+        //BACK_END will eventually use this to navigate to main activity
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
                 }
@@ -85,7 +150,7 @@ class LoginActivity : AppCompatActivity() {
 
 
             }
-            //BACK_END: Handling call errors
+        //BACK_END: Handling call errors
             catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
@@ -99,7 +164,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    //BACK_END: save and read methods for dataStore:
+         //BACK_END: save and read methods for dataStore:
     private suspend fun save(key: String, value: String) {
         val dataStoreKey = preferencesKey<String>(key)
         dataStore.edit { settings ->
@@ -117,4 +182,8 @@ class LoginActivity : AppCompatActivity() {
         super.onDestroy()
         _binding = null
     }
+
+
+
+
 }

@@ -21,6 +21,9 @@ import java.lang.Exception
 const val BASE_URL = "http://34.134.148.105/"
 
 class MainActivity : AppCompatActivity() {
+    //BACK_END: Disabled Back button on landing page
+    override fun onBackPressed() {}
+
 
     //lateinit for dataStore
     private lateinit var dataStore: DataStore<Preferences>
