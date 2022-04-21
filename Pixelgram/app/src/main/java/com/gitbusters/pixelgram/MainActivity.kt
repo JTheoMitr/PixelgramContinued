@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         getCurrentData()
         setLogo()
+        logOutUser()
 
 
     }
@@ -83,6 +84,44 @@ class MainActivity : AppCompatActivity() {
             catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun logOutUser() {
+
+        //BACK_END: Building our retrofit Builder instance
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+
+        MainScope().launch(Dispatchers.IO) {
+            try {
+
+                val response = api.logOut("eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhODcxNmY2NC1iNWFlLTQ3NjctYTViMS0zYmZiMzg1ZGRkNjYifQ.eyJleHAiOjE2NTA1NzY2NTIsImlhdCI6MTY1MDU3NDg1MiwianRpIjoiZjcwYjc1MmQtZjdkNy00ZDdlLThmMjYtNWQwODE0NjhkM2MyIiwiaXNzIjoiaHR0cHM6Ly9lbmFibGVtZW50LWtleWNsb2FrLndvcmsuY29nbml6YW50LnN0dWRpby9hdXRoL3JlYWxtcy9QaXhlbGdyYW0tTW9ub2xpdGgiLCJhdWQiOiJodHRwczovL2VuYWJsZW1lbnQta2V5Y2xvYWsud29yay5jb2duaXphbnQuc3R1ZGlvL2F1dGgvcmVhbG1zL1BpeGVsZ3JhbS1Nb25vbGl0aCIsInN1YiI6ImI3ZGFhMmMxLTRiNmYtNDc4Ni1iNWFlLTkxZTc4NmJhMjdiNCIsInR5cCI6IlJlZnJlc2giLCJhenAiOiJwaXhlbGdyYW0tbW9ub2xpdGgtYmFja2VuZCIsInNlc3Npb25fc3RhdGUiOiJhZjQ1MGNmOC0yODQxLTRlMWUtOWY1Zi01ODBhYjZjNTRiODIiLCJzY29wZSI6ImVtYWlsIHByb2ZpbGUifQ.zdyT38EQ5FXnDe3gQmMq3dQbbzJb36kbyjA4hmYbP1o").awaitResponse()
+                if (response.isSuccessful) {
+
+                    Log.d("ResponseTest", "Call is Successful")
+                    val data = response.body()!!
+                    Log.d("ResponseTestData", data.toString())
+                    Log.d("ResponseTestTwo", "We've grabbed the data")
+
+                    withContext(Dispatchers.Main) {
+
+                        Toast.makeText(applicationContext, "LOGOUT SUCCESS", Toast.LENGTH_LONG).show()
+
+                    }
+                }
+
+            }
+            //BACK_END: Handling call errors
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Log.d("LogOutFail", e.toString())
+                    Toast.makeText(applicationContext, "LOGOUT ERROR", Toast.LENGTH_LONG).show()
                 }
             }
         }
