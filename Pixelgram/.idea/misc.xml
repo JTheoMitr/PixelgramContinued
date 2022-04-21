@@ -3,17 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2526041666666667" />
-        <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2526041666666667" />
+        <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable/filled_border.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable/ic_outline_add_box_24.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable/ic_outline_person_24.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable/ic_pixelgram_logo.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/activity_comment.xml" value="0.23645833333333333" />
+        <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/comment_item.xml" value="0.4" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/post_item.xml" value="0.35573580533024335" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/menu/toolbar_menu.xml" value="0.23645833333333333" />
-        <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2526041666666667" />
       </map>
     </option>
   </component>
