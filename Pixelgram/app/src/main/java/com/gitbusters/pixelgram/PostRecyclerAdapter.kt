@@ -1,5 +1,6 @@
 package com.gitbusters.pixelgram
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -18,14 +19,11 @@ import android.text.SpannableStringBuilder
 import android.widget.*
 import androidx.annotation.Nullable
 import androidx.core.text.bold
-import com.bumptech.glide.request.target.Target
-import com.gitbusters.pixelgram.api.Content
-import androidx.annotation.NonNull
-
-import android.widget.ProgressBar
-
-
-
+import kotlinx.coroutines.*
+import retrofit2.Retrofit
+import retrofit2.awaitResponse
+import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
 
 
 // Build the recyclerview with post_items
@@ -70,16 +68,22 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
         // Set the contents of the view.
         // Get the current post
         val post = postData[position]
-       // Log.d("POSTURL", post.imageUrl)
-        loadImages(post, context, holder)
-        holder.username.text = post.author.username
-        holder.likeCount.text = post.likeCount.toString() + " Likes"
-        holder.commentCount.text = post.likeCount.toString() + " Comments"
-        val description = SpannableStringBuilder()
-            .bold{ append(post.author.username) }
-            .append(" " + post.message)
-        holder.postDesc.text = description
-        // loadComments(post.comments.content, context, holder)
+        //try { // Load the post
+            //Log.d("POSTURL", post.imageUrl)
+            loadImages(post, context, holder)
+            holder.username.text = post.author.username
+            holder.likeCount.text = post.likeCount.toString() + " Likes"
+
+            val description = SpannableStringBuilder()
+                .bold{ append(post.author.username) }
+                .append(" " + post.message)
+            holder.postDesc.text = description
+            getComments(context, holder, post)
+        /*}
+        catch (e: Exception) {
+            Log.d("ERR", e.toString())
+        }*/
+
 
         // Click listener for comments, a bit messy but functional.  For a larger scale, implement an interface.
         holder.viewMoreBtn.setOnClickListener {
@@ -93,20 +97,71 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
     }
 
     /* Load the first 5 comments of the post */
+    /*
     private fun loadComments(content: List<Content>, context: Context, holder: ViewHolder) {
-        for (c in content) {
-            val comment = SpannableStringBuilder()
-                .bold{ append(c.author.username) }
-                .append(" " + c.message)
-            // Progrimatically create a textview
-            val textView = TextView(context).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                text = comment
+        if(holder.commentList.size < 5) {
+            for (c in content) {
+                val comment = SpannableStringBuilder()
+                    .bold{ append(c.author.username) }
+                    .append(" " + c.message)
+                // Progrimatically create a textview
+                val textView = TextView(context).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    text = comment
+                }
+                holder.commentList.addView(textView)
             }
-            holder.commentList.addView(textView)
+        }
+    }
+     */
+
+    private fun getComments(context: Context, holder: ViewHolder, post: Post) {
+        //BACK_END: Building our retrofit Builder instance
+        val pn = 0
+        val ps = 5 // Show the first 5 comments
+
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                val response = api.getComments(post.id,pn,ps).awaitResponse()
+                if (response.isSuccessful) {
+                    val data = response.body()!!
+                    Log.d(ContentValues.TAG,data.content.toString())
+
+                    withContext(Dispatchers.Main) {
+                        // Iterate through the comments.
+                        holder.commentCount.text = data.totalElements.toString() + " Comments"
+                        for (c in data.content) {
+                            val comment = SpannableStringBuilder()
+                                .bold{ append(c.author.username) }
+                                .append(" " + c.message)
+                            // Progrimatically create a textview
+                            val textView = TextView(context).apply {
+                                layoutParams = LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                                )
+                                text = comment
+                            }
+                            holder.commentList.addView(textView)
+                        }
+                    }
+                }
+            }
+            //BACK_END: Handling call errors
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Error loading comments", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
@@ -120,7 +175,7 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
         Glide.with(context)
             .load(post.imageUrl)
             .error(R.drawable.ic_baseline_broken_image_24)
-            .listener(object : RequestListener<Drawable?> {
+            /*.listener(object : RequestListener<Drawable?> {
                 // Handle image load errors.
                 override fun onLoadFailed(
                     e: GlideException?,
@@ -142,7 +197,7 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
                 ): Boolean {
                     return false
                 }
-            })
+            })*/
             .into(holder.postImage)
     }
 
