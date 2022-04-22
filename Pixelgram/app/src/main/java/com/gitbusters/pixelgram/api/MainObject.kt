@@ -9,7 +9,7 @@ data class MainObject(
     val numberOfElements: Int,
     val pageable: Pageable,
     val size: Int,
-    val sort: SortX,
+    val sort: Sort,
     val totalElements: Int,
     val totalPages: Int
 )

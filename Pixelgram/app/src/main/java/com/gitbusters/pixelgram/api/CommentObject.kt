@@ -7,9 +7,9 @@ data class CommentObject(
     val last: Boolean,
     val number: Int,
     val numberOfElements: Int,
-    val pageable: PageableX,
+    val pageable: Pageable,
     val size: Int,
-    val sort: SortXXX,
+    val sort: Sort,
     val totalElements: Int,
     val totalPages: Int
 )
