@@ -9,10 +9,12 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
@@ -100,8 +102,10 @@ class MainActivity : AppCompatActivity() {
 
         MainScope().launch(Dispatchers.IO) {
             try {
+                val userRefreshToken = read("refresh_token")
+                Log.d("LogoutRefreshToken", userRefreshToken.toString())
 
-                val response = api.logOut("eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhODcxNmY2NC1iNWFlLTQ3NjctYTViMS0zYmZiMzg1ZGRkNjYifQ.eyJleHAiOjE2NTA1NzY2NTIsImlhdCI6MTY1MDU3NDg1MiwianRpIjoiZjcwYjc1MmQtZjdkNy00ZDdlLThmMjYtNWQwODE0NjhkM2MyIiwiaXNzIjoiaHR0cHM6Ly9lbmFibGVtZW50LWtleWNsb2FrLndvcmsuY29nbml6YW50LnN0dWRpby9hdXRoL3JlYWxtcy9QaXhlbGdyYW0tTW9ub2xpdGgiLCJhdWQiOiJodHRwczovL2VuYWJsZW1lbnQta2V5Y2xvYWsud29yay5jb2duaXphbnQuc3R1ZGlvL2F1dGgvcmVhbG1zL1BpeGVsZ3JhbS1Nb25vbGl0aCIsInN1YiI6ImI3ZGFhMmMxLTRiNmYtNDc4Ni1iNWFlLTkxZTc4NmJhMjdiNCIsInR5cCI6IlJlZnJlc2giLCJhenAiOiJwaXhlbGdyYW0tbW9ub2xpdGgtYmFja2VuZCIsInNlc3Npb25fc3RhdGUiOiJhZjQ1MGNmOC0yODQxLTRlMWUtOWY1Zi01ODBhYjZjNTRiODIiLCJzY29wZSI6ImVtYWlsIHByb2ZpbGUifQ.zdyT38EQ5FXnDe3gQmMq3dQbbzJb36kbyjA4hmYbP1o").awaitResponse()
+                val response = api.logOut(userRefreshToken.toString()).awaitResponse()
                 if (response.isSuccessful) {
 
                     Log.d("ResponseTest", "Call is Successful")
@@ -156,5 +160,10 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setLogo(R.drawable.ic_pixelgram_logo)
         supportActionBar!!.setDisplayUseLogoEnabled(true)
         supportActionBar!!.title = toolbarTitle
+    }
+    private suspend fun read(key: String): String? {
+        val dataStoreKey = preferencesKey<String>(key)
+        val preferences = dataStore.data.first()
+        return preferences[dataStoreKey]
     }
 }
