@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this@MainActivity)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+        dataStore = createDataStore(name = "settings")
 
         updateCurrentData(page, adapter)
 
