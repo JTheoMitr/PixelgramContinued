@@ -3,6 +3,8 @@ package com.gitbusters.pixelgram
 import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -12,6 +14,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.executor.GlideExecutor.UncaughtThrowableStrategy.LOG
+import com.gitbusters.pixelgram.api.Post
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -23,7 +28,10 @@ import java.lang.Exception
 const val BASE_URL = "http://34.134.148.105/"
 
 class MainActivity : AppCompatActivity() {
-    //BACK_END: Disabled Back button on landing page
+    lateinit var layoutManager: LinearLayoutManager
+    var adapter = PostRecyclerAdapter(listOf()) // listOf<Post>()
+    var page = 0
+        //BACK_END: Disabled Back button on landing page
     override fun onBackPressed() {}
 
 
@@ -31,16 +39,31 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dataStore: DataStore<Preferences>
     //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
+
         // Display the logo of the application
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setLogo(R.drawable.ic_pixelgram_logo)
-        supportActionBar!!.setDisplayUseLogoEnabled(true)
-        supportActionBar!!.setTitle(" Pixelgram")
-        dataStore = createDataStore(name = "settings")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        getCurrentData()
+        val recyclerView = findViewById<RecyclerView>(R.id.rv_post_list)
+       // recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+        layoutManager = LinearLayoutManager(this@MainActivity)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+        dataStore = createDataStore(name = "settings")
+
+        updateCurrentData(page, adapter)
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1)) {
+                    // When the recyclerview gets to the bottom
+                    page++ // Increment the page number.
+                    updateCurrentData(page, adapter)
+                    // DEBUG Toast.makeText(this@MainActivity, "$page", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
         setLogo()
         logOutUser()
 
@@ -48,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //BACK_END: Method to build retrofit instance and create calls
-    private fun getCurrentData() {
+    private fun updateCurrentData(pn : Int, adapter: PostRecyclerAdapter) {
 
         //BACK_END: Building our retrofit Builder instance
         val api = Retrofit.Builder()
@@ -59,25 +82,18 @@ class MainActivity : AppCompatActivity() {
 
         MainScope().launch(Dispatchers.IO) {
             try {
-                //BACK_END: Calling our getPosts method from the API Interface
-                //BACK_END: .getPosts() takes in pageNumber and pageSize
 
-                val response = api.getPosts(1, 5).awaitResponse()
+                val response = api.getPosts(pn, 5).awaitResponse()
+
                 if (response.isSuccessful) {
                     val data = response.body()!!
                     Log.d(TAG, data.content.toString())
 
-                    //BACK_END: For POSTS data: the array of incoming posts is data.content
-                    //BACK_END: Here we are binding the first post's caption to a TextView to confirm data is flowing properly
-                    //BACK_END: TextView can be commented out once data is bound properly with adapter
-                    //BACK_END: The data class for Post lives in the api folder
                     withContext(Dispatchers.Main) {
                         // textView.text = data.content[0].message
                         Log.d("DATA", data.content.toString())
                         //FRONT_END Populate the recyclerview
-                        rv_post_list.layoutManager = LinearLayoutManager(this@MainActivity)
-                        val adapter = PostRecyclerAdapter(data.content)
-                        rv_post_list.adapter = adapter
+                        adapter.setPostData(data.content)
                     }
                 }
 
@@ -86,9 +102,12 @@ class MainActivity : AppCompatActivity() {
             catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
+                    Log.d("ERROR", e.toString())
                 }
             }
+
         }
+
     }
 
     private fun logOutUser() {

@@ -42,7 +42,7 @@ class CommentActivity : AppCompatActivity() {
 
                 //BACK_END: Pass in postId,pageNumber,pageSize
 
-                val response = api.getComments(postid,0,5).awaitResponse()
+                val response = api.getComments(postid,0,15).awaitResponse()
                 if (response.isSuccessful) {
 
                     val data = response.body()!!
@@ -50,11 +50,11 @@ class CommentActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         //BACK_END: All main thread activity
-                        Log.d("DATA", data.content.toString())
                         //FRONT_END Populate the recyclerview
                         rview.layoutManager = LinearLayoutManager(this@CommentActivity)
                         val adapter = CommentRecyclerAdapter(data)
                         rview.adapter = adapter
+                        Log.d("COMMENTS", data.content.toString())
                     }
                 }
 
