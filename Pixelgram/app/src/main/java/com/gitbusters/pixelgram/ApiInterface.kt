@@ -1,9 +1,7 @@
 package com.gitbusters.pixelgram
 
-import com.gitbusters.pixelgram.api.CommentObject
-import com.gitbusters.pixelgram.api.Comments
-import com.gitbusters.pixelgram.api.MainObject
-import com.gitbusters.pixelgram.api.TokenObject
+import com.gitbusters.pixelgram.api.*
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -31,5 +29,11 @@ interface ApiInterface {
         @Field ("password") password: String
 
     ):Call<TokenObject>
+
+    @FormUrlEncoded
+    @POST("oauth/logout")
+    fun logOut(
+        @Field ("refresh_token") refresh_token: String
+    ):Call<ResponseBody>
 
 }

@@ -9,10 +9,12 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         getCurrentData()
         setLogo()
+        logOutUser()
 
 
     }
@@ -88,6 +91,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun logOutUser() {
+
+        //BACK_END: Building our retrofit Builder instance
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                val userRefreshToken = read("refresh_token")
+                Log.d("LogoutRefreshToken", userRefreshToken.toString())
+
+                val response = api.logOut(userRefreshToken.toString()).awaitResponse()
+                if (response.isSuccessful) {
+
+                    Log.d("ResponseTest", "Call is Successful")
+                    val data = response.body()!!
+                    Log.d("ResponseTestData", data.toString())
+                    Log.d("ResponseTestTwo", "We've grabbed the data")
+
+                    withContext(Dispatchers.Main) {
+
+                        Toast.makeText(applicationContext, "LOGOUT SUCCESS", Toast.LENGTH_LONG).show()
+
+                    }
+                }
+
+            }
+            //BACK_END: Handling call errors
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Log.d("LogOutFail", e.toString())
+                    Toast.makeText(applicationContext, "LOGOUT ERROR", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
 
     /* On creation of the app bar */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -117,5 +160,10 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setLogo(R.drawable.ic_pixelgram_logo)
         supportActionBar!!.setDisplayUseLogoEnabled(true)
         supportActionBar!!.title = toolbarTitle
+    }
+    private suspend fun read(key: String): String? {
+        val dataStoreKey = preferencesKey<String>(key)
+        val preferences = dataStore.data.first()
+        return preferences[dataStoreKey]
     }
 }
