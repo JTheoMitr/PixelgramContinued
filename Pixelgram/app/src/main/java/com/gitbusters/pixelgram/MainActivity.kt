@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                     // When the recyclerview gets to the bottom
                     page++ // Increment the page number.
                     updateCurrentData(page, adapter)
-                    Toast.makeText(this@MainActivity, "$page", Toast.LENGTH_LONG).show()
+                    // DEBUG Toast.makeText(this@MainActivity, "$page", Toast.LENGTH_LONG).show()
                 }
             }
         })

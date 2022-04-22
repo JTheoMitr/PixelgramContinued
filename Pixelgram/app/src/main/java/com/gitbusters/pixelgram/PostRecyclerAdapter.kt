@@ -19,6 +19,7 @@ import android.text.SpannableStringBuilder
 import android.widget.*
 import androidx.annotation.Nullable
 import androidx.core.text.bold
+import androidx.core.view.size
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
@@ -87,7 +88,7 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
 
         // Click listener for comments, a bit messy but functional.  For a larger scale, implement an interface.
         holder.viewMoreBtn.setOnClickListener {
-            Toast.makeText(context, post.id.toString(), Toast.LENGTH_SHORT).show()
+            // Toast.makeText(context, post.id.toString(), Toast.LENGTH_SHORT).show()
             val intent = Intent(context, CommentActivity::class.java)
             intent.putExtra("postid", post.id)
             context.startActivity(intent)
@@ -139,19 +140,21 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
                     withContext(Dispatchers.Main) {
                         // Iterate through the comments.
                         holder.commentCount.text = data.totalElements.toString() + " Comments"
-                        for (c in data.content) {
-                            val comment = SpannableStringBuilder()
-                                .bold{ append(c.author.username) }
-                                .append(" " + c.message)
-                            // Progrimatically create a textview
-                            val textView = TextView(context).apply {
-                                layoutParams = LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT
-                                )
-                                text = comment
+                        if(holder.commentList.size < 5) {
+                            for (c in data.content) {
+                                val comment = SpannableStringBuilder()
+                                    .bold{ append(c.author.username) }
+                                    .append(" " + c.message)
+                                // Progrimatically create a textview
+                                val textView = TextView(context).apply {
+                                    layoutParams = LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                    )
+                                    text = comment
+                                }
+                                holder.commentList.addView(textView)
                             }
-                            holder.commentList.addView(textView)
                         }
                     }
                 }
