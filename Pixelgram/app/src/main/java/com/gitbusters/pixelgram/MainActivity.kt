@@ -24,6 +24,7 @@ import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 const val BASE_URL = "http://34.134.148.105/"
 
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         // Display the logo of the application
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContentView(R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.rv_post_list)
