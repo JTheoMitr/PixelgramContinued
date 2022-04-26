@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_above="@id/rl_info"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="88dp"
+            android:layout_height="75dp"
+            android:src="@drawable/ic_pixelgram_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/et_username"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/iv_logo"
+            android:text="Pixelgram"
+            android:textSize="34sp"
+            tools:ignore="NotSibling" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_info"
+        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/et_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:background="@drawable/filled_border"
+            android:hint="Username"
+            android:layout_marginBottom="10dp"
+            android:padding="20dp" />
+
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_username"
+            android:background="@drawable/filled_border"
+            android:hint="Password"
+            android:inputType="textWebPassword"
+            android:layout_marginTop="10dp"
+            android:padding="20dp"
+            android:textColor="@color/gray" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_info"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRegister"
+            style="@style/btnStyle"
+            android:layout_width="118dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:padding="20dp"
+            android:text="Register" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLogin"
+            style="@style/btnStyle"
+            android:layout_width="118dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/btnRegister"
+            android:padding="20dp"
+            android:text="Login" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

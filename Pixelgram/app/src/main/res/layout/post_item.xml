@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="10dp"
+    app:cardElevation="2dp"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/post_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_profilePic"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="10dp"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_baseline_person_24"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/iv_profilePic"
+            android:text="username placeholder" />
+
+        <ImageButton
+            android:id="@+id/btn_post_options"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:background="@color/white"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:src="@drawable/ic_baseline_more_horiz_24" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_post_image"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_below="@+id/post_header"
+        android:scaleType="centerCrop" />
+    <ImageButton
+        android:id="@+id/btn_like_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_favorite_outline"
+        android:background="@color/white"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/iv_post_image"/>
+    <TextView
+        android:id="@+id/tv_like_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12 Likes"
+        android:layout_toEndOf="@id/btn_like_post"
+        android:layout_below="@+id/iv_post_image"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_comment_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_post_image"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toEndOf="@id/tv_like_count"
+        android:text="14 Comments" />
+
+    <LinearLayout
+        android:id="@+id/ll_comment_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_below="@id/btn_like_post"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_author_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="description" />
+        <!-- Click listener for viewing all comments -->
+        <TextView
+            android:id="@+id/tv_view_more_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/view_more_comments" />
+        <!-- Fill with comment_item.xml -->
+
+    </LinearLayout>
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>
