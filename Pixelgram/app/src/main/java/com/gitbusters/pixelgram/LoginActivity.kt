@@ -54,6 +54,15 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this@LoginActivity, "Airplane Mode is on", Toast.LENGTH_LONG).show()
                 }}}
 
+        binding.btnRegister.setOnClickListener {
+            lifecycleScope.launch {
+                Toast.makeText(this@LoginActivity, "Device is Offline", Toast.LENGTH_LONG).show()
+                Log.d(ContentValues.TAG,"Its not available")
+                if((Settings.System.getInt(contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1)) {
+                    Log.d("Airplane Mode", "Airplane mode is on")
+                    Toast.makeText(this@LoginActivity, "Airplane Mode is on", Toast.LENGTH_LONG).show()
+                }}}
+
 
 
         //BACK_END: Network Request Builder
@@ -76,6 +85,13 @@ class LoginActivity : AppCompatActivity() {
                         getTokenData()
                     }
                 }
+
+            binding.btnRegister.setOnClickListener {
+                lifecycleScope.launch {
+                    dataStore = createDataStore(name = "settings")
+                    getTokenData()
+                }
+            }
             }
 
         //BACK_END: Network capabilities have changed and logged
@@ -151,6 +167,56 @@ class LoginActivity : AppCompatActivity() {
 
             }
         //BACK_END: Handling call errors
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
+                    Log.d("TOKEN_ERROR", e.message.toString())
+                }
+            }
+        }
+        lifecycleScope.launch {
+            val value = read("refresh_token")
+            Log.d("UserToken", value.toString())
+        }
+    }
+
+    private fun registerUser() {
+
+        //BACK_END: Building our retrofit Builder instance
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                Log.d("LAUNCH", "we are gonna try")
+
+                //BACK_END:  Call getTokenData from API and log refresh token
+                val response = api.registerUser(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
+                Log.d("TOKEN_PRE", response.toString())
+                if (response.isSuccessful) {
+                    val data = response.body()!!
+                    withContext(Dispatchers.Main) {
+                        Log.d("TOKEN", data.refresh_token)
+                    }
+                    lifecycleScope.launch {
+
+                        save("refresh_token",
+                            data.refresh_token)
+
+                    }
+                    //BACK_END will eventually use this to navigate to main activity
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
+                }
+
+
+
+
+            }
+            //BACK_END: Handling call errors
             catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
