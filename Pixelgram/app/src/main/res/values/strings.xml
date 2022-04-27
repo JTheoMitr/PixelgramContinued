@@ -2,4 +2,9 @@
     <string name="app_name">Pixelgram</string>
     <string name="view_more_comments"><u>View More Comments</u></string>
     <string name="incoming_data">Incoming Data</string>
+    <string name="submit">SUBMIT</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="register">Register</string>
 </resources>
