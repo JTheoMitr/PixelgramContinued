@@ -174,9 +174,10 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+        // BACK_END: This checks to make sure data was correctly wiped from most recent session
         lifecycleScope.launch {
             val value = read("refresh_token")
-            Log.d("UserToken", value.toString())
+            Log.d("UserTokenCache", value.toString())
         }
     }
 
