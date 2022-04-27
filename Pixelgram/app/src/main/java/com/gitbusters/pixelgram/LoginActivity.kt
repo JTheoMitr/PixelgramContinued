@@ -207,7 +207,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
 
-                else if (response.isSuccessful) {
+                if (response.isSuccessful) {
 
                         val data = response.body()!!
                         withContext(Dispatchers.Main) {
