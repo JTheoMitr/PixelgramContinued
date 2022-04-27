@@ -89,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
             binding.btnRegister.setOnClickListener {
                 lifecycleScope.launch {
                     dataStore = createDataStore(name = "settings")
-                    getTokenData()
+                    registerUser()
                 }
             }
             }
@@ -144,7 +144,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("LAUNCH", "we are gonna try")
 
         //BACK_END:  Call getTokenData from API and log refresh token
-                val response = api.getTokenData("GitBusters","GitBustersPass").awaitResponse()
+                val response = api.getTokenData(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
                 Log.d("TOKEN_PRE", response.toString())
                 if (response.isSuccessful) {
                     val data = response.body()!!
@@ -169,7 +169,7 @@ class LoginActivity : AppCompatActivity() {
         //BACK_END: Handling call errors
             catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "No Internet Connected", Toast.LENGTH_LONG).show()
                     Log.d("TOKEN_ERROR", e.message.toString())
                 }
             }
@@ -191,26 +191,41 @@ class LoginActivity : AppCompatActivity() {
 
         MainScope().launch(Dispatchers.IO) {
             try {
-                Log.d("LAUNCH", "we are gonna try")
+                Log.d("LAUNCH", "Register Call Attempted")
 
                 //BACK_END:  Call getTokenData from API and log refresh token
                 val response = api.registerUser(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
-                Log.d("TOKEN_PRE", response.toString())
-                if (response.isSuccessful) {
-                    val data = response.body()!!
+                Log.d("RESPONSE_CODE", response.code().toString())
+                val responseCode = response.code().toString()
+                if (responseCode == "500") {
                     withContext(Dispatchers.Main) {
-                        Log.d("TOKEN", data.refresh_token)
+                        Toast.makeText(
+                            applicationContext,
+                            "Account already exists",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-                    lifecycleScope.launch {
-
-                        save("refresh_token",
-                            data.refresh_token)
-
-                    }
-                    //BACK_END will eventually use this to navigate to main activity
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intent)
                 }
+
+                else if (response.isSuccessful) {
+
+                        val data = response.body()!!
+                        withContext(Dispatchers.Main) {
+                            Log.d("TOKEN", data.refresh_token)
+                        }
+                        lifecycleScope.launch {
+
+                            save(
+                                "refresh_token",
+                                data.refresh_token
+                            )
+
+                        }
+                        //BACK_END: navigate to main activity
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    }
+
 
 
 
@@ -219,7 +234,7 @@ class LoginActivity : AppCompatActivity() {
             //BACK_END: Handling call errors
             catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "We hit the catch", Toast.LENGTH_LONG).show()
                     Log.d("TOKEN_ERROR", e.message.toString())
                 }
             }
