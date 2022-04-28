@@ -1,6 +1,7 @@
 package com.gitbusters.pixelgram
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -178,6 +179,8 @@ class MainActivity : AppCompatActivity() {
         }
         R.id.action_profile -> {
             Toast.makeText(this, "account button pressed", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
             true
         }
         else -> super.onOptionsItemSelected(item)
