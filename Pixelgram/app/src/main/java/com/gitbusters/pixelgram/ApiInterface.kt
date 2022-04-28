@@ -3,23 +3,24 @@ package com.gitbusters.pixelgram
 import com.gitbusters.pixelgram.api.*
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiInterface {
     @GET("posts")
-    fun getPosts(
+    suspend fun getPosts(
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int,
-    ): Call<MainObject>
+    ): Response<MainObject>
 
 
 
     @GET("posts/{postId}/comments")
-    fun getComments(
+    suspend fun getComments(
         @Path("postId") postId: Int,
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int,
-    ):Call<CommentObject>
+    ):Response<CommentObject>
 
 
     @FormUrlEncoded
