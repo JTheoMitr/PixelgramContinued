@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -17,7 +19,10 @@ import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 
+@AndroidEntryPoint
 class CommentActivity : AppCompatActivity() {
+    private val model : MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comment)
@@ -29,42 +34,47 @@ class CommentActivity : AppCompatActivity() {
 
     private fun getPostComments(postid: Int) {
         val rview = findViewById<RecyclerView>(R.id.comment_recyclerview)
+        rview.layoutManager = LinearLayoutManager(this@CommentActivity)
+
+        model.returnComments(postid,0,15).observe(this,{
+                comments -> comments.let{rview.adapter=CommentRecyclerAdapter(comments)}
+        })
 
         //BACK_END: Building our retrofit Builder instance
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiInterface::class.java)
-
-        MainScope().launch(Dispatchers.IO) {
-            try {
-
-                //BACK_END: Pass in postId,pageNumber,pageSize
-
-                val response = api.getComments(postid,0,15).awaitResponse()
-                if (response.isSuccessful) {
-
-                    val data = response.body()!!
-                    Log.d(ContentValues.TAG,data.content.toString())
-
-                    withContext(Dispatchers.Main) {
-                        //BACK_END: All main thread activity
-                        //FRONT_END Populate the recyclerview
-                        rview.layoutManager = LinearLayoutManager(this@CommentActivity)
-                        val adapter = CommentRecyclerAdapter(data)
-                        rview.adapter = adapter
-                        Log.d("COMMENTS", data.content.toString())
-                    }
-                }
-
-            }
-            //BACK_END: Handling call errors
-            catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
+//        val api = Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(ApiInterface::class.java)
+//
+//        MainScope().launch(Dispatchers.IO) {
+//            try {
+//
+//                //BACK_END: Pass in postId,pageNumber,pageSize
+//
+//                val response = api.getComments(postid,0,15)//.awaitResponse()
+//                if (response.isSuccessful) {
+//
+//                    val data = response.body()!!
+//                    Log.d(ContentValues.TAG,data.content.toString())
+//
+//                    withContext(Dispatchers.Main) {
+//                        //BACK_END: All main thread activity
+//                        //FRONT_END Populate the recyclerview
+//                        rview.layoutManager = LinearLayoutManager(this@CommentActivity)
+//                        val adapter = CommentRecyclerAdapter(data)
+//                        rview.adapter = adapter
+//                        Log.d("COMMENTS", data.content.toString())
+//                    }
+//                }
+//
+//            }
+//            //BACK_END: Handling call errors
+//            catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        }
     }
 }

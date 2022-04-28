@@ -3,6 +3,7 @@ package com.gitbusters.pixelgram
 import com.gitbusters.pixelgram.api.*
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiInterface {
@@ -10,21 +11,21 @@ interface ApiInterface {
     //BACK_END: FETCH ALL POSTS for landing page
     //takes two arguments: Page Number and Page Size
     @GET("posts")
-    fun getPosts(
+    suspend fun getPosts(
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int,
-    ): Call<MainObject>
+    ): Response<MainObject>
 
 
 
     //BACK_END: FETCH COMMENTS for each individual post
     //takes three arguments: Page Number, Page Size, and Post ID
     @GET("posts/{postId}/comments")
-    fun getComments(
+    suspend fun getComments(
         @Path("postId") postId: Int,
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int,
-    ):Call<CommentObject>
+    ):Response<CommentObject>
 
 
     //BACK_END: SIGN IN with existing account

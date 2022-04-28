@@ -2,6 +2,7 @@ package com.gitbusters.pixelgram
 
 import android.content.ContentValues
 import android.content.Intent
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
