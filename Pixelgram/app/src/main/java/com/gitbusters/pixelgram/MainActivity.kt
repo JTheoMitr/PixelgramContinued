@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.preferencesKey
@@ -25,10 +26,14 @@ import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import dagger.hilt.android.AndroidEntryPoint
 
 const val BASE_URL = "http://34.134.148.105/"
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val model : MainViewModel by viewModels()
+
     lateinit var layoutManager: LinearLayoutManager
     var adapter = PostRecyclerAdapter(listOf()) // listOf<Post>()
     var page = 0
@@ -39,7 +44,7 @@ class MainActivity : AppCompatActivity() {
     //lateinit for dataStore
     private lateinit var dataStore: DataStore<Preferences>
     //BACK_END: Added coroutine scope to project:
-    override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
+    override fun onCreate(savedInstanceState: Bundle?) {
 
         // Display the logo of the application
         super.onCreate(savedInstanceState)
@@ -75,40 +80,44 @@ class MainActivity : AppCompatActivity() {
     //BACK_END: Method to build retrofit instance and create calls
     private fun updateCurrentData(pn : Int, adapter: PostRecyclerAdapter) {
 
+        model.returnPosts(pn,30).observe(this,{
+                posts -> posts.let{adapter.setPostData(posts.content)}
+        })
+
         //BACK_END: Building our retrofit Builder instance
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiInterface::class.java)
-
-        MainScope().launch(Dispatchers.IO) {
-            try {
-
-                val response = api.getPosts(pn, 5).awaitResponse()
-
-                if (response.isSuccessful) {
-                    val data = response.body()!!
-                    Log.d(TAG, data.content.toString())
-
-                    withContext(Dispatchers.Main) {
-                        // textView.text = data.content[0].message
-                        Log.d("DATA", data.content.toString())
-                        //FRONT_END Populate the recyclerview
-                        adapter.setPostData(data.content)
-                    }
-                }
-
-            }
-            //BACK_END: Handling call errors
-            catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
-                    Log.d("ERROR", e.toString())
-                }
-            }
-
-        }
+//        val api = Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(ApiInterface::class.java)
+//
+//        MainScope().launch(Dispatchers.IO) {
+//            try {
+//
+//                val response = api.getPosts(pn, 5).awaitResponse()
+//
+//                if (response.isSuccessful) {
+//                    val data = response.body()!!
+//                    Log.d(TAG, data.content.toString())
+//
+//                    withContext(Dispatchers.Main) {
+//                        // textView.text = data.content[0].message
+//                        Log.d("DATA", data.content.toString())
+//                        //FRONT_END Populate the recyclerview
+//                        adapter.setPostData(data.content)
+//                    }
+//                }
+//
+//            }
+//            //BACK_END: Handling call errors
+//            catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
+//                    Log.d("ERROR", e.toString())
+//                }
+//            }
+//
+//        }
 
     }
 

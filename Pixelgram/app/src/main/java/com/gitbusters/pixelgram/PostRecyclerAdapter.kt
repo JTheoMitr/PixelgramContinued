@@ -132,7 +132,7 @@ class PostRecyclerAdapter (private var postData: List<Post>) : RecyclerView.Adap
 
         MainScope().launch(Dispatchers.IO) {
             try {
-                val response = api.getComments(post.id,pn,ps).awaitResponse()
+                val response = api.getComments(post.id,pn,ps)//.awaitResponse()
                 if (response.isSuccessful) {
                     val data = response.body()!!
                     Log.d(ContentValues.TAG,data.content.toString())
