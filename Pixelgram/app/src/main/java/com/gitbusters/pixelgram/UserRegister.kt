@@ -42,14 +42,29 @@ class UserRegister : AppCompatActivity() {
         }
 
         showHideBtn.setOnClickListener {
-            if (showHideBtn.text.toString().equals("Show Password")) {
+            if (showHideBtn.text.toString().equals("SHOW")) {
                 password.transformationMethod = HideReturnsTransformationMethod.getInstance()
                 password2.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                showHideBtn.text = getString(R.string.hide_password)
+                showHideBtn.text = getString(R.string.hide)
+                showHideBtn2.text = getString(R.string.hide)
             } else {
                 password.transformationMethod = PasswordTransformationMethod.getInstance()
                 password2.transformationMethod = PasswordTransformationMethod.getInstance()
-                showHideBtn.text = getString(R.string.show_password)
+                showHideBtn.text = getString(R.string.show)
+                showHideBtn2.text = getString(R.string.show)
+            }
+        }
+        showHideBtn2.setOnClickListener {
+            if (showHideBtn.text.toString().equals("SHOW")) {
+                password.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                password2.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                showHideBtn.text = getString(R.string.hide)
+                showHideBtn2.text = getString(R.string.hide)
+            } else {
+                password.transformationMethod = PasswordTransformationMethod.getInstance()
+                password2.transformationMethod = PasswordTransformationMethod.getInstance()
+                showHideBtn.text = getString(R.string.show)
+                showHideBtn2.text = getString(R.string.show)
             }
         }
 
