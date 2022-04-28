@@ -11,4 +11,7 @@
     <string name="hide">HIDE</string>
     <string name="show">SHOW</string>
     <string name="divider_line">|</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
 </resources>
