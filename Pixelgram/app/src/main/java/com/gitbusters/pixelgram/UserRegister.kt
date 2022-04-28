@@ -3,10 +3,13 @@ package com.gitbusters.pixelgram
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_user_register.*
 
 class UserRegister : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,8 +39,19 @@ class UserRegister : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Passwords do not match", Toast.LENGTH_SHORT).show()
                 }
             }
-
-
         }
+
+        showHideBtn.setOnClickListener {
+            if (showHideBtn.text.toString().equals("Show Password")) {
+                password.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                password2.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                showHideBtn.text = getString(R.string.hide_password)
+            } else {
+                password.transformationMethod = PasswordTransformationMethod.getInstance()
+                password2.transformationMethod = PasswordTransformationMethod.getInstance()
+                showHideBtn.text = getString(R.string.show_password)
+            }
+        }
+
     }
 }
