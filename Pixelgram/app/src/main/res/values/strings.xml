@@ -10,4 +10,5 @@
     <string name="logo">Logo</string>
     <string name="hide">HIDE</string>
     <string name="show">SHOW</string>
+    <string name="divider_line">|</string>
 </resources>
