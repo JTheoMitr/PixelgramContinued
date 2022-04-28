@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.datastore.core.DataStore
@@ -20,6 +21,7 @@ import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.lifecycleScope
 import com.gitbusters.pixelgram.databinding.ActivityLoginBinding
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
@@ -44,6 +46,9 @@ class LoginActivity : AppCompatActivity() {
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val usernameET : EditText = findViewById(R.id.editText_username)
+        val passwordET : EditText = findViewById(R.id.editText_password)
+
         //BACK_END: Network was never reached, default case
         binding.btnLogin.setOnClickListener {
             lifecycleScope.launch {
@@ -52,7 +57,8 @@ class LoginActivity : AppCompatActivity() {
                 if((Settings.System.getInt(contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1)) {
                     Log.d("Airplane Mode", "Airplane mode is on")
                     Toast.makeText(this@LoginActivity, "Airplane Mode is on", Toast.LENGTH_LONG).show()
-                }}}
+                }}
+        }
 
 
 
@@ -71,10 +77,31 @@ class LoginActivity : AppCompatActivity() {
                 super.onAvailable(network)
                 Log.d(ContentValues.TAG,"Its available!")
                 binding.btnLogin.setOnClickListener {
-                    lifecycleScope.launch {
-                        dataStore = createDataStore(name = "settings")
-                        getTokenData()
+
+                    val username = usernameET.text.toString()
+                    val password = passwordET.text.toString()
+
+                    fun checkIfEmptyInput(s: String, editText: EditText) {
+                        if (s == "") {
+                            editText.setError("Please Complete All Fields")
+                            editText.setBackgroundResource(R.drawable.red_outline)
+                            Toast.makeText(applicationContext, "Please Complete All Fields", Toast.LENGTH_LONG).show()
+                        } else if (s != "") {
+                            editText.setBackgroundResource(R.drawable.filled_border)
+                            if (username != "" && password != "") {
+                                lifecycleScope.launch {
+                                    dataStore = createDataStore(name = "settings")
+                                    getTokenData()
+                                }
+                            } else {
+                                Toast.makeText(applicationContext, "Please Complete All Fields", Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
+
+                    checkIfEmptyInput(username, editText_username)
+                    checkIfEmptyInput(password, editText_password)
+
                 }
             }
 
