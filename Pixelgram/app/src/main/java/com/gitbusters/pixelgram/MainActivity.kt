@@ -1,6 +1,7 @@
 package com.gitbusters.pixelgram
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -8,7 +9,10 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.preferencesKey
@@ -25,13 +29,20 @@ import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.datastore.preferences.core.clear
+import androidx.datastore.preferences.core.edit
 
 const val BASE_URL = "http://34.134.148.105/"
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val model : MainViewModel by viewModels()
+
     lateinit var layoutManager: LinearLayoutManager
     var adapter = PostRecyclerAdapter(listOf()) // listOf<Post>()
     var page = 0
+    var loggedIn = false
         //BACK_END: Disabled Back button on landing page
     override fun onBackPressed() {}
 
@@ -39,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     //lateinit for dataStore
     private lateinit var dataStore: DataStore<Preferences>
     //BACK_END: Added coroutine scope to project:
-    override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
+    override fun onCreate(savedInstanceState: Bundle?) {
 
         // Display the logo of the application
         super.onCreate(savedInstanceState)
@@ -75,40 +86,44 @@ class MainActivity : AppCompatActivity() {
     //BACK_END: Method to build retrofit instance and create calls
     private fun updateCurrentData(pn : Int, adapter: PostRecyclerAdapter) {
 
+        model.returnPosts(pn,30).observe(this,{
+                posts -> posts.let{adapter.setPostData(posts.content)}
+        })
+
         //BACK_END: Building our retrofit Builder instance
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiInterface::class.java)
-
-        MainScope().launch(Dispatchers.IO) {
-            try {
-
-                val response = api.getPosts(pn, 5).awaitResponse()
-
-                if (response.isSuccessful) {
-                    val data = response.body()!!
-                    Log.d(TAG, data.content.toString())
-
-                    withContext(Dispatchers.Main) {
-                        // textView.text = data.content[0].message
-                        Log.d("DATA", data.content.toString())
-                        //FRONT_END Populate the recyclerview
-                        adapter.setPostData(data.content)
-                    }
-                }
-
-            }
-            //BACK_END: Handling call errors
-            catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
-                    Log.d("ERROR", e.toString())
-                }
-            }
-
-        }
+//        val api = Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(ApiInterface::class.java)
+//
+//        MainScope().launch(Dispatchers.IO) {
+//            try {
+//
+//                val response = api.getPosts(pn, 5).awaitResponse()
+//
+//                if (response.isSuccessful) {
+//                    val data = response.body()!!
+//                    Log.d(TAG, data.content.toString())
+//
+//                    withContext(Dispatchers.Main) {
+//                        // textView.text = data.content[0].message
+//                        Log.d("DATA", data.content.toString())
+//                        //FRONT_END Populate the recyclerview
+//                        adapter.setPostData(data.content)
+//                    }
+//                }
+//
+//            }
+//            //BACK_END: Handling call errors
+//            catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
+//                    Log.d("ERROR", e.toString())
+//                }
+//            }
+//
+//        }
 
     }
 
@@ -133,6 +148,9 @@ class MainActivity : AppCompatActivity() {
                     val data = response.body()!!
                     Log.d("ResponseTestData", data.toString())
                     Log.d("ResponseTestTwo", "We've grabbed the data")
+                    dataStore.edit {
+                        it.clear()
+                    }
 
                     withContext(Dispatchers.Main) {
 
@@ -161,17 +179,51 @@ class MainActivity : AppCompatActivity() {
     }
 
     /* Create the behavior for clicking the toolbar buttons */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        // Skeleton functions for toolbar actions
-        R.id.action_new_post -> {
-            Toast.makeText(this, "New Post Button press", Toast.LENGTH_SHORT).show()
-            true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            // Skeleton functions for toolbar actions
+            R.id.action_new_post -> {
+                Toast.makeText(this, "New Post Button press", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_profile -> {
+
+                val btnView = findViewById<View>(R.id.action_profile)
+                val popup = PopupMenu(this, btnView)
+                popup.inflate(R.menu.loginout_popup_menu)
+
+                if (!loggedIn) {
+                    popup.menu.findItem(R.id.menuLogin).setVisible(true)
+                    popup.menu.findItem(R.id.menuLogout).setVisible(false)
+                } else {
+                    popup.menu.findItem(R.id.menuLogin).setVisible(false)
+                    popup.menu.findItem(R.id.menuLogout).setVisible(true)
+                }
+
+                popup.setOnMenuItemClickListener {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    when (it.itemId) {
+                        R.id.menuLogout -> {
+                            Toast.makeText(this, "Click Logout", Toast.LENGTH_SHORT).show()
+                            loggedIn = false
+                            startActivity(intent)
+                        }
+                        R.id.menuLogin -> {
+                            Toast.makeText(this, "Click Login", Toast.LENGTH_SHORT).show()
+                            loggedIn = true
+                            startActivity(intent)
+
+                        }
+                    }
+                    true
+                }
+                popup.show()
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        R.id.action_profile -> {
-            Toast.makeText(this, "account button pressed", Toast.LENGTH_SHORT).show()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
+
+        return true
+        /*Changes login and logout button on toolbar*/
     }
 
     /* Set the app logo on the toolbar */
