@@ -32,6 +32,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.datastore.preferences.core.clear
 import androidx.datastore.preferences.core.edit
+import androidx.lifecycle.lifecycleScope
 
 const val BASE_URL = "http://34.134.148.105/"
 
@@ -52,6 +53,8 @@ class MainActivity : AppCompatActivity() {
     //BACK_END: Added coroutine scope to project:
     override fun onCreate(savedInstanceState: Bundle?) {
 
+
+
         // Display the logo of the application
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -63,6 +66,10 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         dataStore = createDataStore(name = "settings")
+
+        lifecycleScope.launch {
+            loggedIn = read("refresh_token") != null
+        }
 
         updateCurrentData(page, adapter)
 
@@ -78,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         setLogo()
-        logOutUser()
+        //logOutUser()
 
 
     }
@@ -90,40 +97,7 @@ class MainActivity : AppCompatActivity() {
                 posts -> posts.let{adapter.setPostData(posts.content)}
         })
 
-        //BACK_END: Building our retrofit Builder instance
-//        val api = Retrofit.Builder()
-//            .baseUrl(BASE_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//            .create(ApiInterface::class.java)
-//
-//        MainScope().launch(Dispatchers.IO) {
-//            try {
-//
-//                val response = api.getPosts(pn, 5).awaitResponse()
-//
-//                if (response.isSuccessful) {
-//                    val data = response.body()!!
-//                    Log.d(TAG, data.content.toString())
-//
-//                    withContext(Dispatchers.Main) {
-//                        // textView.text = data.content[0].message
-//                        Log.d("DATA", data.content.toString())
-//                        //FRONT_END Populate the recyclerview
-//                        adapter.setPostData(data.content)
-//                    }
-//                }
-//
-//            }
-//            //BACK_END: Handling call errors
-//            catch (e: Exception) {
-//                withContext(Dispatchers.Main) {
-//                    Toast.makeText(applicationContext, "no internet", Toast.LENGTH_LONG).show()
-//                    Log.d("ERROR", e.toString())
-//                }
-//            }
-//
-//        }
+
 
     }
 
@@ -176,6 +150,8 @@ class MainActivity : AppCompatActivity() {
         val inflater = menuInflater
         inflater.inflate(R.menu.toolbar_menu, menu)
         return super.onCreateOptionsMenu(menu)
+
+
     }
 
     /* Create the behavior for clicking the toolbar buttons */
@@ -192,6 +168,9 @@ class MainActivity : AppCompatActivity() {
                 val popup = PopupMenu(this, btnView)
                 popup.inflate(R.menu.loginout_popup_menu)
 
+
+
+
                 if (!loggedIn) {
                     popup.menu.findItem(R.id.menuLogin).setVisible(true)
                     popup.menu.findItem(R.id.menuLogout).setVisible(false)
@@ -205,12 +184,12 @@ class MainActivity : AppCompatActivity() {
                     when (it.itemId) {
                         R.id.menuLogout -> {
                             Toast.makeText(this, "Click Logout", Toast.LENGTH_SHORT).show()
-                            loggedIn = false
+                            logOutUser()
                             startActivity(intent)
                         }
                         R.id.menuLogin -> {
                             Toast.makeText(this, "Click Login", Toast.LENGTH_SHORT).show()
-                            loggedIn = true
+
                             startActivity(intent)
 
                         }
