@@ -9,6 +9,8 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var layoutManager: LinearLayoutManager
     var adapter = PostRecyclerAdapter(listOf()) // listOf<Post>()
     var page = 0
+    var loggedIn = false
         //BACK_END: Disabled Back button on landing page
     override fun onBackPressed() {}
 
@@ -176,19 +179,51 @@ class MainActivity : AppCompatActivity() {
     }
 
     /* Create the behavior for clicking the toolbar buttons */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        // Skeleton functions for toolbar actions
-        R.id.action_new_post -> {
-            Toast.makeText(this, "New Post Button press", Toast.LENGTH_SHORT).show()
-            true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            // Skeleton functions for toolbar actions
+            R.id.action_new_post -> {
+                Toast.makeText(this, "New Post Button press", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_profile -> {
+
+                val btnView = findViewById<View>(R.id.action_profile)
+                val popup = PopupMenu(this, btnView)
+                popup.inflate(R.menu.loginout_popup_menu)
+
+                if (!loggedIn) {
+                    popup.menu.findItem(R.id.menuLogin).setVisible(true)
+                    popup.menu.findItem(R.id.menuLogout).setVisible(false)
+                } else {
+                    popup.menu.findItem(R.id.menuLogin).setVisible(false)
+                    popup.menu.findItem(R.id.menuLogout).setVisible(true)
+                }
+
+                popup.setOnMenuItemClickListener {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    when (it.itemId) {
+                        R.id.menuLogout -> {
+                            Toast.makeText(this, "Click Logout", Toast.LENGTH_SHORT).show()
+                            loggedIn = false
+                            startActivity(intent)
+                        }
+                        R.id.menuLogin -> {
+                            Toast.makeText(this, "Click Login", Toast.LENGTH_SHORT).show()
+                            loggedIn = true
+                            startActivity(intent)
+
+                        }
+                    }
+                    true
+                }
+                popup.show()
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        R.id.action_profile -> {
-            Toast.makeText(this, "account button pressed", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
+
+        return true
+        /*Changes login and logout button on toolbar*/
     }
 
     /* Set the app logo on the toolbar */
