@@ -51,6 +51,13 @@ interface ApiInterface {
         @Field ("refresh_token") refresh_token: String
     ):Call<ResponseBody>
 
+    //BACK_END: POST COMMENTS
+    @POST("posts/{postId}/comments")
+    fun postComments(
+        @Path("postId") postId: Int,
+        @Body PostComment:PostComments
+    ):Call<PostComments>
+
 
 
 
