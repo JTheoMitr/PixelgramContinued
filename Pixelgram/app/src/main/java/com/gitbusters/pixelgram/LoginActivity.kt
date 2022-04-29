@@ -103,6 +103,11 @@ class LoginActivity : AppCompatActivity() {
                     checkIfEmptyInput(password, editText_password)
 
                 }
+
+            binding.btnRegister.setOnClickListener {
+                val intent = Intent(this@LoginActivity, UserRegister::class.java)
+                startActivity(intent)
+            }
             }
 
         //BACK_END: Network capabilities have changed and logged
