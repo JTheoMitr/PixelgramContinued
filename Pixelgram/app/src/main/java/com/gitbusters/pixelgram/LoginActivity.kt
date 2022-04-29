@@ -174,7 +174,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("LAUNCH", "we are gonna try")
 
         //BACK_END:  Call getTokenData from API and log refresh token
-                val response = api.getTokenData(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
+                val response = api.getTokenData(binding.editTextUsername.text.toString(), binding.editTextPassword.text.toString()).awaitResponse()
                 Log.d("TOKEN_PRE", response.toString())
                 if (response.isSuccessful) {
                     val data = response.body()!!
@@ -225,7 +225,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("LAUNCH", "Register Call Attempted")
 
                 //BACK_END:  Call getTokenData from API and log refresh token
-                val response = api.registerUser(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
+                val response = api.registerUser(binding.editTextUsername.text.toString(), binding.editTextPassword.text.toString()).awaitResponse()
                 Log.d("RESPONSE_CODE", response.code().toString())
                 val responseCode = response.code().toString()
                 if (responseCode == "500") {
