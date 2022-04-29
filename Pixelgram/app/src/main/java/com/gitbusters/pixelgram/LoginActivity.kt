@@ -2,6 +2,7 @@ package com.gitbusters.pixelgram
 
 import android.content.ContentValues
 import android.content.Intent
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -54,6 +55,15 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this@LoginActivity, "Airplane Mode is on", Toast.LENGTH_LONG).show()
                 }}}
 
+        binding.btnRegister.setOnClickListener {
+            lifecycleScope.launch {
+                Toast.makeText(this@LoginActivity, "Device is Offline", Toast.LENGTH_LONG).show()
+                Log.d(ContentValues.TAG,"Its not available")
+                if((Settings.System.getInt(contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1)) {
+                    Log.d("Airplane Mode", "Airplane mode is on")
+                    Toast.makeText(this@LoginActivity, "Airplane Mode is on", Toast.LENGTH_LONG).show()
+                }}}
+
 
 
         //BACK_END: Network Request Builder
@@ -76,6 +86,13 @@ class LoginActivity : AppCompatActivity() {
                         getTokenData()
                     }
                 }
+
+            binding.btnRegister.setOnClickListener {
+                lifecycleScope.launch {
+                    dataStore = createDataStore(name = "settings")
+                    registerUser()
+                }
+            }
             }
 
         //BACK_END: Network capabilities have changed and logged
@@ -128,7 +145,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("LAUNCH", "we are gonna try")
 
         //BACK_END:  Call getTokenData from API and log refresh token
-                val response = api.getTokenData("GitBusters","GitBustersPass").awaitResponse()
+                val response = api.getTokenData(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
                 Log.d("TOKEN_PRE", response.toString())
                 if (response.isSuccessful) {
                     val data = response.body()!!
@@ -153,7 +170,73 @@ class LoginActivity : AppCompatActivity() {
         //BACK_END: Handling call errors
             catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "Call Error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "No Internet Connected", Toast.LENGTH_LONG).show()
+                    Log.d("TOKEN_ERROR", e.message.toString())
+                }
+            }
+        }
+        // BACK_END: This checks to make sure data was correctly wiped from most recent session.  Should be NULL
+        lifecycleScope.launch {
+            val value = read("refresh_token")
+            Log.d("UserTokenCache", value.toString())
+        }
+    }
+
+    private fun registerUser() {
+
+        //BACK_END: Building our retrofit Builder instance
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                Log.d("LAUNCH", "Register Call Attempted")
+
+                //BACK_END:  Call getTokenData from API and log refresh token
+                val response = api.registerUser(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
+                Log.d("RESPONSE_CODE", response.code().toString())
+                val responseCode = response.code().toString()
+                if (responseCode == "500") {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Account already exists",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+                if (response.isSuccessful) {
+
+                        val data = response.body()!!
+                        withContext(Dispatchers.Main) {
+                            Log.d("TOKEN", data.refresh_token)
+                        }
+                        lifecycleScope.launch {
+
+                            save(
+                                "refresh_token",
+                                data.refresh_token
+                            )
+
+                        }
+                        //BACK_END: navigate to main activity
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    }
+
+
+
+
+
+            }
+            //BACK_END: Handling call errors
+            catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "We hit the catch", Toast.LENGTH_LONG).show()
                     Log.d("TOKEN_ERROR", e.message.toString())
                 }
             }

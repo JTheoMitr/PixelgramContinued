@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-    <uses-permission android:name= " android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name=" android.permission.WRITE_SETTINGS" />
 
     <application
         android:name=".PostApplication"
@@ -18,22 +18,26 @@
         android:theme="@style/Theme.AppSplash"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".UserRegister"
+            android:exported="true"
+            android:theme="@style/Theme.Pixelgram"/>
+        <activity
             android:name=".LoginActivity"
-            android:theme="@style/Theme.Pixelgram"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Pixelgram">
         </activity>
         <activity
             android:name=".CommentActivity"
             android:exported="true"
-            android:theme="@style/Theme.Pixelgram"/>
+            android:theme="@style/Theme.Pixelgram" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
-          <intent-filter>
-              <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-              <category android:name="android.intent.category.LAUNCHER" />
-           </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

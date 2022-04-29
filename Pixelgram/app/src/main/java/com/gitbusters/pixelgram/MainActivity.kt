@@ -30,6 +30,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.datastore.preferences.core.clear
+import androidx.datastore.preferences.core.edit
 
 const val BASE_URL = "http://34.134.148.105/"
 
@@ -146,6 +148,9 @@ class MainActivity : AppCompatActivity() {
                     val data = response.body()!!
                     Log.d("ResponseTestData", data.toString())
                     Log.d("ResponseTestTwo", "We've grabbed the data")
+                    dataStore.edit {
+                        it.clear()
+                    }
 
                     withContext(Dispatchers.Main) {
 
