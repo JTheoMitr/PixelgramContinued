@@ -118,7 +118,7 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
                 lifecycleScope.launch {
                     dataStore = createDataStore(name = "settings")
-                    registerUser()
+                    //registerUser()
                 }
 
             }
@@ -211,70 +211,70 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerUser() {
-
-        //BACK_END: Building our retrofit Builder instance
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiInterface::class.java)
-
-        MainScope().launch(Dispatchers.IO) {
-            try {
-                Log.d("LAUNCH", "Register Call Attempted")
-
-                //BACK_END:  Call getTokenData from API and log refresh token
-                val response = api.registerUser(binding.editTextUsername.text.toString(), binding.editTextPassword.text.toString()).awaitResponse()
-                Log.d("RESPONSE_CODE", response.code().toString())
-                val responseCode = response.code().toString()
-                if (responseCode == "500") {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            applicationContext,
-                            "Account already exists",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-                if (response.isSuccessful) {
-
-                        val data = response.body()!!
-                        withContext(Dispatchers.Main) {
-                            Log.d("TOKEN", data.refresh_token)
-                        }
-                        lifecycleScope.launch {
-
-                            save(
-                                "refresh_token",
-                                data.refresh_token
-                            )
-
-                        }
-                        //BACK_END: navigate to main activity
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
-                    }
-
-
-
-
-
-            }
-            //BACK_END: Handling call errors
-            catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "We hit the catch", Toast.LENGTH_LONG).show()
-                    Log.d("TOKEN_ERROR", e.message.toString())
-                }
-            }
-        }
-        lifecycleScope.launch {
-            val value = read("refresh_token")
-            Log.d("UserToken", value.toString())
-        }
-    }
+//    private fun registerUser() {
+//
+//        //BACK_END: Building our retrofit Builder instance
+//        val api = Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(ApiInterface::class.java)
+//
+//        MainScope().launch(Dispatchers.IO) {
+//            try {
+//                Log.d("LAUNCH", "Register Call Attempted")
+//
+//                //BACK_END:  Call getTokenData from API and log refresh token
+//                val response = api.registerUser(binding.editTextUsername.text.toString(), binding.editTextPassword.text.toString()).awaitResponse()
+//                Log.d("RESPONSE_CODE", response.code().toString())
+//                val responseCode = response.code().toString()
+//                if (responseCode == "500") {
+//                    withContext(Dispatchers.Main) {
+//                        Toast.makeText(
+//                            applicationContext,
+//                            "Account already exists",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                    }
+//                }
+//
+//                if (response.isSuccessful) {
+//
+//                        val data = response.body()!!
+//                        withContext(Dispatchers.Main) {
+//                            Log.d("TOKEN", data.refresh_token)
+//                        }
+//                        lifecycleScope.launch {
+//
+//                            save(
+//                                "refresh_token",
+//                                data.refresh_token
+//                            )
+//
+//                        }
+//                        //BACK_END: navigate to main activity
+//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//
+//
+//
+//
+//
+//            }
+//            //BACK_END: Handling call errors
+//            catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(applicationContext, "Please try again", Toast.LENGTH_LONG).show()
+//                    Log.d("TOKEN_ERROR", e.message.toString())
+//                }
+//            }
+//        }
+//        lifecycleScope.launch {
+//            val value = read("refresh_token")
+//            Log.d("UserToken", value.toString())
+//        }
+//    }
 
          //BACK_END: save and read methods for dataStore:
     private suspend fun save(key: String, value: String) {
