@@ -67,7 +67,7 @@ class CommentActivity : AppCompatActivity() {
 
     private suspend fun postComment() {
 
-        // val accessToken = read("access_token")  //dont have lol
+        // val accessToken = read("access_token")
         class AuthInterceptor(context: Context) : Interceptor {
             // private val sessionManager = SessionManager(context)
             override fun intercept(chain: Interceptor.Chain): Response {
