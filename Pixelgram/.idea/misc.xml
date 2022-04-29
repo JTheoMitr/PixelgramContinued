@@ -3,11 +3,6 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/955316/AndroidStudioProjects/android_develop2/Pixelgram/app/src/main/res/drawable/red_outline.xml" value="0.228" />
-        <entry key="..\:/Users/955316/AndroidStudioProjects/android_develop2/Pixelgram/app/src/main/res/layout/activity_login.xml" value="0.3671875" />
-        <entry key="..\:/Users/955316/AndroidStudioProjects/android_develop2/Pixelgram/app/src/main/res/layout/activity_user_register.xml" value="0.3296875" />
-        <entry key="..\:/Users/955316/AndroidStudioProjects/android_develop2/Pixelgram/app/src/main/res/layout/activity_user_registration.xml" value="0.4316644113667118" />
-        <entry key="..\:/Users/955316/AndroidStudioProjects/android_develop2/Pixelgram/app/src/main/res/layout/activity_userregistration.xml" value="0.2708333333333333" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable/ic_outline_add_box_24.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable/ic_outline_person_24.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/drawable/ic_pixelgram_logo.xml" value="0.2526041666666667" />
@@ -15,14 +10,12 @@
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/comment_item.xml" value="0.4" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/post_item.xml" value="0.4" />
         <entry key="..\:/Users/955319/AndroidStudioProjects/android/Pixelgram/app/src/main/res/menu/toolbar_menu.xml" value="0.23645833333333333" />
-        <entry key="..\:/Users/955335/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/activity_login.xml" value="0.1585144927536232" />
-        <entry key="..\:/Users/955335/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/activity_login_placeholder.xml" value="0.1585144927536232" />
-        <entry key="..\:/Users/955335/AndroidStudioProjects/android/Pixelgram/app/src/main/res/layout/post_item.xml" value="0.1585144927536232" />
-        <entry key="..\:/Users/955362/AndroidStudioProjects/GitBustersPixelgram/Pixelgram/app/src/main/res/layout/activity_login.xml" value="0.1796875" />
         <entry key="..\:/Users/955362/AndroidStudioProjects/GitBustersPixelgram/Pixelgram/app/src/main/res/layout/activity_comment.xml" value="0.1796875" />
         <entry key="..\:/Users/955362/AndroidStudioProjects/GitBustersPixelgram/Pixelgram/app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="..\:/Users/955362/AndroidStudioProjects/GitBustersPixelgram/Pixelgram/app/src/main/res/layout/activity_login_placeholder.xml" value="0.1796875" />
+        <entry key="..\:/Users/955362/AndroidStudioProjects/GitBustersPixelgram/Pixelgram/app/src/main/res/layout/activity_user_register.xml" value="0.1796875" />
         <entry key="..\:/Users/955362/AndroidStudioProjects/GitBustersPixelgram/Pixelgram/app/src/main/res/layout/comment_item.xml" value="0.1796875" />
+        <entry key="..\:/Users/955362/AndroidStudioProjects/GitBustersPixelgram/Pixelgram/app/src/main/res/menu/toolbar_menu.xml" value="0.1796875" />
       </map>
     </option>
   </component>
