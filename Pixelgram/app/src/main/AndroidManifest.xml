@@ -24,8 +24,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true"
-            android:theme="@style/Theme.Pixelgram">
-        </activity>
+            android:theme="@style/Theme.Pixelgram"/>
         <activity
             android:name=".CommentActivity"
             android:exported="true"

@@ -4,27 +4,44 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
         android:layout_above="@id/rl_info"
-        android:layout_height="wrap_content">
+        android:orientation="horizontal"
+        android:layout_centerInParent="true">
+
         <ImageView
             android:id="@+id/iv_logo"
             android:layout_width="88dp"
             android:layout_height="75dp"
+            android:layout_marginTop="15dp"
             android:src="@drawable/ic_pixelgram_logo" />
 
         <TextView
+            android:id="@+id/dividerLine"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/etUsername"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/iv_logo"
-            android:text="Pixelgram"
-            android:textSize="34sp"
-            tools:ignore="NotSibling" />
-    </RelativeLayout>
+            android:layout_height="85dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/divider_line"
+            android:textColor="@color/black"
+            android:textSize="70sp" />
+
+        <TextView
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="cursive"
+            android:text="@string/login"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="48sp" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl_info"
@@ -34,26 +51,26 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/etUsername"
+            android:id="@+id/editText_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:background="@drawable/filled_border"
-            android:hint="Username"
+            android:hint="@string/username"
             android:padding="20dp"
-            android:textColor="@color/gray" />
+            android:textColor="@color/black" />
 
         <EditText
-            android:id="@+id/etPassword"
+            android:id="@+id/editText_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/etUsername"
-            android:background="@drawable/filled_border"
-            android:hint="Password"
-            android:inputType="textWebPassword"
+            android:layout_below="@+id/editText_username"
             android:layout_marginTop="10dp"
+            android:background="@drawable/filled_border"
+            android:hint="@string/password"
+            android:inputType="textPassword"
             android:padding="20dp"
-            android:textColor="@color/gray" />
+            android:textColor="@color/black" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -70,19 +87,19 @@
             style="@style/btnStyle"
             android:layout_width="118dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:padding="20dp"
-            android:text="Register" />
+            android:text="@string/register" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnLogin"
             style="@style/btnStyle"
             android:layout_width="118dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@id/btnRegister"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/btnRegister"
             android:padding="20dp"
-            android:text="Login" />
+            android:text="@string/login" />
     </RelativeLayout>
 
 

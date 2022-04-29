@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.datastore.core.DataStore
@@ -21,6 +22,7 @@ import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.lifecycleScope
 import com.gitbusters.pixelgram.databinding.ActivityLoginBinding
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
@@ -44,6 +46,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val usernameET : EditText = findViewById(R.id.editText_username)
+        val passwordET : EditText = findViewById(R.id.editText_password)
 
         //BACK_END: Network was never reached, default case
         binding.btnLogin.setOnClickListener {
@@ -81,17 +86,41 @@ class LoginActivity : AppCompatActivity() {
                 super.onAvailable(network)
                 Log.d(ContentValues.TAG,"Its available!")
                 binding.btnLogin.setOnClickListener {
-                    lifecycleScope.launch {
-                        dataStore = createDataStore(name = "settings")
-                        getTokenData()
+
+                    val username = usernameET.text.toString()
+                    val password = passwordET.text.toString()
+
+                    fun checkIfEmptyInput(s: String, editText: EditText) {
+                        if (s == "") {
+                            editText.setError("Please Complete All Fields")
+                            editText.setBackgroundResource(R.drawable.red_outline)
+                            Toast.makeText(applicationContext, "Please Complete All Fields", Toast.LENGTH_LONG).show()
+                        } else if (s != "") {
+                            editText.setBackgroundResource(R.drawable.filled_border)
+                            if (username != "" && password != "") {
+                                lifecycleScope.launch {
+                                    dataStore = createDataStore(name = "settings")
+                                    getTokenData()
+                                }
+                            } else {
+                                Toast.makeText(applicationContext, "Please Complete All Fields", Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
+
+                    checkIfEmptyInput(username, editText_username)
+                    checkIfEmptyInput(password, editText_password)
+
                 }
 
             binding.btnRegister.setOnClickListener {
+                val intent = Intent(this@LoginActivity, UserRegister::class.java)
+                startActivity(intent)
                 lifecycleScope.launch {
                     dataStore = createDataStore(name = "settings")
                     registerUser()
                 }
+
             }
             }
 
@@ -145,7 +174,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("LAUNCH", "we are gonna try")
 
         //BACK_END:  Call getTokenData from API and log refresh token
-                val response = api.getTokenData(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
+                val response = api.getTokenData(binding.editTextUsername.text.toString(), binding.editTextPassword.text.toString()).awaitResponse()
                 Log.d("TOKEN_PRE", response.toString())
                 if (response.isSuccessful) {
                     val data = response.body()!!
@@ -196,7 +225,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("LAUNCH", "Register Call Attempted")
 
                 //BACK_END:  Call getTokenData from API and log refresh token
-                val response = api.registerUser(binding.etUsername.text.toString(), binding.etPassword.text.toString()).awaitResponse()
+                val response = api.registerUser(binding.editTextUsername.text.toString(), binding.editTextPassword.text.toString()).awaitResponse()
                 Log.d("RESPONSE_CODE", response.code().toString())
                 val responseCode = response.code().toString()
                 if (responseCode == "500") {
